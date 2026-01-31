@@ -1,1465 +1,236 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EF Mods | GTA5 模组</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- 液态玻璃 & 动画核心样式 -->
-  <style>
-    /* 液态玻璃按钮核心样式 */
-    .btn-liquid {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 255, 255, 0.05) 50%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    
-    .btn-liquid::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.25) 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        transparent 100%
-      );
-      opacity: 0.5;
-      z-index: -1;
-      transition: opacity 0.3s ease;
-    }
-    
-    .btn-liquid::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(
-        from 0deg at 50% 50%,
-        rgba(255, 255, 255, 0) 0deg,
-        rgba(255, 255, 255, 0.1) 60deg,
-        rgba(255, 255, 255, 0) 120deg
-      );
-      animation: liquid-rotate 3s linear infinite;
-      z-index: -2;
-    }
-    
-    /* 液态玻璃光线折射效果 */
-    .btn-liquid .liquid-refraction {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: radial-gradient(
-        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-        rgba(255, 255, 255, 0.15) 0%,
-        transparent 60%
-      );
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: -1;
-    }
-    
-    /* 更新日志动画容器 */
-    .log-block {
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transform-origin: top;
-    }
-    
-    .log-block[open] {
-      animation: logExpand 0.5s ease-out forwards;
-    }
-    
-    .log-content {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    
-    .log-block[open] .log-content {
-      animation: contentReveal 0.6s 0.2s ease-out forwards;
-    }
-    
-    /* 动画定义 */
-    @keyframes liquid-rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    
-    @keyframes logExpand {
-      0% {
-        transform: scaleY(0.8);
-        opacity: 0.5;
-      }
-      70% {
-        transform: scaleY(1.05);
-        opacity: 0.8;
-      }
-      100% {
-        transform: scaleY(1);
-        opacity: 1;
-      }
-    }
-    
-    @keyframes contentReveal {
-      0% {
-        max-height: 0;
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      100% {
-        max-height: 1000px;
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    @keyframes liquidPulse {
-      0%, 100% {
-        box-shadow: 
-          0 10px 40px rgba(0, 122, 255, 0.2),
-          0 0 0 0 rgba(0, 122, 255, 0.1);
-      }
-      50% {
-        box-shadow: 
-          0 15px 50px rgba(0, 122, 255, 0.3),
-          0 0 0 10px rgba(0, 122, 255, 0.05);
-      }
-    }
-  </style>
-  
-  <!-- 主题与基础样式 -->
-  <style>
-    :root {
-      /* 浅色主题变量 */
-      --bg-main: #ffffff;
-      --bg-secondary: #f8f9fa;
-      --bg-card: #ffffff;
-      --text-main: #1d1d1f;
-      --text-sub: #86868b;
-      --text-light: #a1a1a6;
-      --blue: #007aff;
-      --blue-light: #409cff;
-      --red: #ff3b30;
-      --green: #34c759;
-      --border: #d2d2d7;
-      --border-light: #e5e5ea;
-      --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.12);
-      --shadow-xl: 0 20px 80px rgba(0, 0, 0, 0.16);
-      --shadow-nav: 0 2px 20px rgba(0, 0, 0, 0.05);
-      --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      --transition-fast: all 0.2s ease;
-      --nav-height: 70px;
-      --radius: 16px;
-      --radius-sm: 12px;
-    }
-    
-    /* 深色主题 */
-    [data-theme="dark"] {
-      --bg-main: #000000;
-      --bg-secondary: #1c1c1e;
-      --bg-card: #1c1c1e;
-      --text-main: #f5f5f7;
-      --text-sub: #aeaeb2;
-      --text-light: #8e8e93;
-      --blue: #0a84ff;
-      --blue-light: #5ac8fa;
-      --border: #38383a;
-      --border-light: #2c2c2e;
-      --shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
-      --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.35);
-      --shadow-xl: 0 20px 80px rgba(0, 0, 0, 0.45);
-      --shadow-nav: 0 2px 20px rgba(0, 0, 0, 0.25);
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    html {
-      scroll-behavior: smooth;
-      -webkit-font-smoothing: antialiased;
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      line-height: 1.6;
-      overflow-x: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-    
-    /* 导航栏 */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: var(--nav-height);
-      background-color: rgba(255, 255, 255, 0.92);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--border-light);
-      z-index: 1000;
-      box-shadow: var(--shadow-nav);
-    }
-    
-    [data-theme="dark"] .navbar {
-      background-color: rgba(28, 28, 30, 0.92);
-    }
-    
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .nav-brand {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text-main);
-      text-decoration: none;
-      letter-spacing: -0.5px;
-    }
-    
-    .nav-menu {
-      display: flex;
-      gap: 32px;
-    }
-    
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-sub);
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 500;
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      transition: var(--transition-fast);
-      position: relative;
-    }
-    
-    .nav-item:hover {
-      color: var(--text-main);
-      background-color: rgba(0, 0, 0, 0.03);
-    }
-    
-    .nav-item.active {
-      color: var(--blue);
-      background-color: rgba(0, 122, 255, 0.08);
-    }
-    
-    [data-theme="dark"] .nav-item:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-    
-    [data-theme="dark"] .nav-item.active {
-      background-color: rgba(10, 132, 255, 0.15);
-    }
-    
-    .nav-item.active::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 12px;
-      right: 12px;
-      height: 2px;
-      background-color: var(--blue);
-      border-radius: 1px;
-    }
-    
-    .nav-actions {
-      display: flex;
-      align-items: center;
-    }
-    
-    .theme-toggle {
-      background: transparent;
-      border: none;
-      color: var(--text-sub);
-      font-size: 18px;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      width: 40px;
-      height: 40px;
-    }
-    
-    .theme-toggle:hover {
-      background-color: rgba(0, 0, 0, 0.05);
-      color: var(--text-main);
-    }
-    
-    [data-theme="dark"] .theme-toggle:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-    
-    /* 主要内容区域 */
-    .main-content {
-      margin-top: var(--nav-height);
-      min-height: calc(100vh - var(--nav-height));
-    }
-    
-    .page {
-      display: none;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-    
-    .page.active-page {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-      animation: pageFadeIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    }
-    
-    @keyframes pageFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    /* Hero 区域 */
-    .hero {
-      min-height: 85vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 80px 20px;
-      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-main) 100%);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border-light), transparent);
-    }
-    
-    .hero-content {
-      max-width: 800px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .hero h1 {
-      font-size: clamp(3.2rem, 6vw, 4.8rem);
-      font-weight: 700;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, var(--text-main) 0%, var(--text-sub) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .subtitle {
-      font-size: 1.3rem;
-      color: var(--text-sub);
-      margin-bottom: 24px;
-      font-weight: 400;
-    }
-    
-    .version {
-      font-size: 1rem;
-      color: var(--text-light);
-      margin-bottom: 40px;
-    }
-    
-    .hero-buttons {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    
-    /* 按钮样式 */
-    .btn {
-      padding: 14px 32px;
-      border-radius: 100px;
-      font-size: 16px;
-      font-weight: 500;
-      text-decoration: none;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-      border: none;
-      outline: none;
-    }
-    
-    .btn.primary {
-      background: var(--blue);
-      color: white;
-      box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
-    }
-    
-    .btn.primary:hover {
-      background: var(--blue-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
-    }
-    
-    [data-theme="dark"] .btn.primary {
-      box-shadow: 0 4px 20px rgba(10, 132, 255, 0.3);
-    }
-    
-    [data-theme="dark"] .btn.primary:hover {
-      box-shadow: 0 8px 32px rgba(10, 132, 255, 0.4);
-    }
-    
-    .btn.ghost {
-      background: transparent;
-      color: var(--text-main);
-      border: 1px solid var(--border);
-    }
-    
-    .btn.ghost:hover {
-      background: rgba(0, 0, 0, 0.03);
-      border-color: var(--text-light);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-    
-    [data-theme="dark"] .btn.ghost:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
-    
-    .btn.small {
-      padding: 8px 16px;
-      font-size: 14px;
-    }
-    
-    /* 内容区块 */
-    .section {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 100px 24px;
-      scroll-margin-top: calc(var(--nav-height) + 20px);
-    }
-    
-    .section h2 {
-      font-size: 2.8rem;
-      font-weight: 700;
-      margin-bottom: 40px;
-      letter-spacing: -0.5px;
-      position: relative;
-      color: var(--text-main);
-    }
-    
-    .section h2::after {
-      content: "";
-      width: 60px;
-      height: 4px;
-      background: linear-gradient(90deg, var(--blue), var(--blue-light));
-      display: block;
-      margin-top: 16px;
-      border-radius: 2px;
-    }
-    
-    /* 功能特性列表 */
-    .features {
-      margin-top: 32px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    
-    .features li {
-      background: var(--bg-card);
-      padding: 28px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-light);
-      transition: var(--transition);
-      list-style: none;
-      position: relative;
-      box-shadow: var(--shadow);
-    }
-    
-    .features li:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-xl);
-      border-color: var(--blue);
-    }
-    
-    .features li::before {
-      content: "✓";
-      position: absolute;
-      top: 28px;
-      right: 28px;
-      color: var(--blue);
-      font-weight: 600;
-      font-size: 18px;
-    }
-    
-    /* 视频容器 */
-    .video-wrapper {
-      position: relative;
-      padding-top: 56.25%;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-xl);
-      background: #000;
-    }
-    
-    .video-wrapper iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    
-    /* 安装说明 */
-    .install-list {
-      list-style: none;
-    }
-    
-    .install-list li {
-      margin-bottom: 14px;
-      padding-left: 24px;
-      position: relative;
-      color: var(--text-main);
-    }
-    
-    .install-list li::before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      color: var(--blue);
-      font-weight: bold;
-      font-size: 18px;
-    }
-    
-    .install-list code {
-      background: rgba(0, 122, 255, 0.08);
-      color: var(--blue);
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-family: 'SF Mono', Monaco, monospace;
-      font-size: 0.9em;
-    }
-    
-    [data-theme="dark"] .install-list code {
-      background: rgba(10, 132, 255, 0.15);
-    }
-    
-    .warning {
-      margin-top: 24px;
-      padding: 16px;
-      background: rgba(255, 59, 48, 0.08);
-      border: 1px solid rgba(255, 59, 48, 0.2);
-      border-radius: var(--radius-sm);
-      color: var(--red);
-      font-weight: 500;
-    }
-    
-    /* 更新日志 */
-    .version-filter {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-    }
-    
-    .filter-btn {
-      padding: 10px 20px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      color: var(--text-sub);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition-fast);
-    }
-    
-    .filter-btn:hover {
-      border-color: var(--blue);
-      color: var(--blue);
-    }
-    
-    .filter-btn.active {
-      background: var(--blue);
-      color: white;
-      border-color: var(--blue);
-    }
-    
-    .log-container {
-      margin-bottom: 32px;
-    }
-    
-    .log-group {
-      margin-bottom: 40px;
-    }
-    
-    .log-title {
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin-bottom: 24px;
-      color: var(--text-main);
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-light);
-    }
-    
-    .log-block {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      border: 1px solid var(--border-light);
-      margin-bottom: 16px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-    }
-    
-    .log-block:hover {
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .log-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 24px;
-      cursor: pointer;
-      list-style: none;
-      position: relative;
-    }
-    
-    .log-header::-webkit-details-marker {
-      display: none;
-    }
-    
-    .log-version {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-    
-    .log-date {
-      color: var(--text-sub);
-      font-size: 0.95rem;
-    }
-    
-    .log-icon {
-      color: var(--text-light);
-      transition: transform 0.3s ease, color 0.3s ease;
-    }
-    
-    .log-block[open] .log-icon {
-      transform: rotate(180deg);
-    }
-    
-    .log-content {
-      padding: 0 24px 24px 24px;
-      border-top: 1px solid var(--border-light);
-      margin-top: 0;
-    }
-    
-    .log-content ul {
-      list-style: none;
-      margin-top: 16px;
-    }
-    
-    .log-content li {
-      margin-bottom: 10px;
-      padding-left: 20px;
-      position: relative;
-      color: var(--text-sub);
-    }
-    
-    .log-content li::before {
-      content: "—";
-      position: absolute;
-      left: 0;
-      color: var(--blue);
-    }
-    
-    .collapse-buttons {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      margin-top: 32px;
-    }
-    
-    /* 下载卡片 */
-    .download-card {
-      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-main) 100%);
-      border-radius: var(--radius);
-      padding: 40px;
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-xl);
-      text-align: center;
-    }
-    
-    .download-card h3 {
-      font-size: 1.8rem;
-      margin-bottom: 24px;
-      color: var(--text-main);
-    }
-    
-    .download-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      justify-content: center;
-    }
-    
-    /* 页脚 */
-    .footer {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-sub);
-      border-top: 1px solid var(--border-light);
-      background: var(--bg-secondary);
-    }
-    
-    /* 响应式设计 */
-    @media (max-width: 768px) {
-      :root {
-        --nav-height: 60px;
-        --radius: 12px;
-      }
-      
-      .nav-container {
-        padding: 0 16px;
-      }
-      
-      .nav-menu {
-        gap: 12px;
-      }
-      
-      .nav-item {
-        font-size: 14px;
-        padding: 6px 10px;
-      }
-      
-      .hero h1 {
-        font-size: clamp(2.5rem, 5vw, 3.5rem);
-      }
-      
-      .subtitle {
-        font-size: 1.1rem;
-      }
-      
-      .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .btn {
-        width: 100%;
-        max-width: 280px;
-      }
-      
-      .section h2 {
-        font-size: 2.2rem;
-      }
-      
-      .features {
-        grid-template-columns: 1fr;
-      }
-      
-      .log-header {
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      
-      .download-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .download-buttons .btn {
-        width: 100%;
-        max-width: 280px;
-      }
-      
-      .theme-toggle {
-        width: 36px;
-        height: 36px;
-        font-size: 16px;
-      }
-    }
-    
-    /* 滚动条美化 */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-      background: var(--bg-secondary);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--text-light);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EF Mods | GTA5 模组</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
-<body data-theme="light">
-  <!-- 固定导航栏 -->
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="#" class="nav-brand">EF Mods</a>
-      <div class="nav-menu">
-        <a href="#police-mod" class="nav-item active" data-page="police-mod">
-          <i class="fas fa-shield-alt"></i>
-          EF Police Mod
-        </a>
-        <a href="#yuyu-tool" class="nav-item" data-page="yuyu-tool">
-          <i class="fas fa-tools"></i>
-          EF 宇宇修改器
-        </a>
-      </div>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="theme-toggle" title="切换到深色主题">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
+<body>
+    <div class="container">
+        <h1>EF Mods | GTA5 模组</h1>
+        
+        <div class="card">
+            <h2 id="police-mod">EF Police Mod</h2>
+            <p>高拟真 · 高自由度 · GTA5 警察玩法模组</p>
+            <p>当前版本：v5.2.1 ｜ 更新日期：2026-01-31</p>
+            <a href="https://www.wanjiadongli.com/mods/287526" class="btn">立即下载</a>
+            <a href="#video" class="btn">观看演示</a>
+            
+            <h3>模组介绍</h3>
+            <p>EF Police Mod 是一款专注于真实执法流程与嫌疑人行为逻辑的 GTA5 警察模组。 模组采用全新 5.x 架构，从底层行为系统重构，强调稳定性、可拓展性与沉浸式体验。</p>
+            <ul>
+                <li>警用终端系统，自由接警与任务选择</li>
+                <li>嫌疑人性格与风险等级系统（普通 / 中危 / 高危）</li>
+                <li>真实拘捕、逼停、反抗与追车流程</li>
+                <li>模块化逻辑，持续迭代更新</li>
+            </ul>
+            
+            <h3>实机演示</h3>
+            <div id="video">
+                <p>实机演示视频将在这里显示</p>
+            </div>
+            
+            <h3>安装与使用说明</h3>
+            <ul>
+                <li>必须使用 ScriptHook / ScriptHookVDotNet3</li>
+                <li>推荐使用最新版本，直接覆盖安装</li>
+                <li>将 DLL 文件 放入 `/scripts` 文件夹（若没有请新建）</li>
+            </ul>
+            
+            <p>官网地址：<a href="https://www.wanjiadongli.com">https://www.wanjiadongli.com</a></p>
+            <p>模组下载地址：<a href="https://www.wanjiadongli.com/mods/287526">玩家动力 - EF Police Mod</a></p>
+            <p>⚠ 本模组仅在 玩家动力网 发布原创版本，其余来源均为假冒。</p>
+            
+            <h3>更新日志</h3>
+            <div class="log-section">
+                <div class="log-header">
+                    <h4>全部版本 5.x 系列 4.x 系列</h4>
+                    <span class="toggle-text">全部展开</span>
+                </div>
+                <div class="log-content active">
+                    <div class="log-item">
+                        <h5>5.x 系列（当前维护）</h5>
+                        <p>v5.2.1 2026-01-31</p>
+                        <ul>
+                            <li>警用终端 UI 大幅改进</li>
+                            <li>逼停自动化：车内即可操作，E 键控制上下车</li>
+                            <li>指令距离限制放宽（避免跨地图控制）</li>
+                            <li>高危嫌疑人反抗行为大幅改进</li>
+                            <li>清理重复逻辑与提示文本</li>
+                            <li>全面优化 UI 视觉效果</li>
+                            <li>增强日志系统，便于错误定位</li>
+                            <li>修复多种极端情况下的 Bug</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>v5.2.0 2026-01-30</h5>
+                        <ul>
+                            <li>推出更自由的警用终端系统</li>
+                            <li>支持步行 / 追车两种任务模式</li>
+                            <li>追车嫌疑人新增普通 / 中危 / 高危档位</li>
+                            <li>新增拒停逃逸与武装反抗概率机制</li>
+                            <li>嫌疑人下车行为更加自然</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>v5.1.1 2026-01-29</h5>
+                        <ul>
+                            <li>紧急修复嫌疑人无法反抗的问题</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>v5.1.0 2026-01-29</h5>
+                        <ul>
+                            <li>新增警用终端系统，可自由接警</li>
+                            <li>优化嫌疑人上车后的导航路径逻辑</li>
+                            <li>新增多处帮助文本提示</li>
+                            <li>修复若干已知 Bug</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>v5.0.x 2026-01</h5>
+                        <ul>
+                            <li>重构嫌疑人行为与状态系统</li>
+                            <li>新增执法评分系统</li>
+                            <li>大幅提升整体稳定性</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>4.x 系列（停止维护）</h5>
+                        <p>v4.0.5 2026-01-17</p>
+                        <p>4.x 系列最终版本 整体可玩，除菜单问题外较稳定</p>
+                        <p>v4.0.0 – v4.0.4 2026-01</p>
+                        <p>修复接警、菜单、嫌疑人显示、增援逻辑等大量问题</p>
+                        <p>新增跟随 / 上车系统</p>
+                        <p>优化快捷键冲突</p>
+                        <p>早期架构版本，已下架</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>下载</h3>
+            <div class="download-links">
+                <a href="https://www.wanjiadongli.com/mods/287526" class="btn">玩家动力</a>
+                <a href="#" class="btn">百度网盘（预留）</a>
+                <a href="#" class="btn">夸克网盘（预留）</a>
+                <a href="#" class="btn">123 云盘（预留）</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 id="yuyu-tool">EF 宇宇修改器</h2>
+            <p>重新定义游戏的修改器，麻雀虽小，五脏俱全</p>
+            <p>当前版本：v4.1.1 ｜ 更新日期：2026-01-31</p>
+            <a href="#" class="btn">立即下载</a>
+            <a href="#yuyu-video" class="btn">观看演示</a>
+            
+            <h3>功能特色</h3>
+            <p>EF 宇宇修改器 这是一个重新定义游戏的修改器，内置绝大多数的功能供您使用，麻雀虽小，五脏俱全，这是您的全能助手！</p>
+            <ul>
+                <li>采用模块化设计，界面简洁直观，操作流畅自然</li>
+                <li>支持保存INI配置文件加载</li>
+                <li>车辆生成与属性修改系统</li>
+                <li>角色模型与属性自定义</li>
+                <li>世界环境与天气控制</li>
+                <li>线上载具都可召出</li>
+                <li>武器与载具数据库</li>
+                <li>线上武器均可获取</li>
+            </ul>
+            
+            <h3>功能演示</h3>
+            <div id="yuyu-video">
+                <p>功能演示视频将在这里显示</p>
+            </div>
+            
+            <h3>更新日志</h3>
+            <div class="log-section">
+                <div class="log-header">
+                    <h4>全部版本 4.x 系列 3.x 系列 2.x 系列 1.x 系列</h4>
+                    <span class="toggle-text">全部展开</span>
+                </div>
+                <div class="log-content active">
+                    <div class="log-item">
+                        <h5>4.x 系列</h5>
+                        <p>v4.1.1 2026-01-31</p>
+                        <ul>
+                            <li>修复了配置文件无法正常保存的问题</li>
+                            <li>修复了FOV无法切换的问题</li>
+                            <li>修复了降低画质无法生效的问题</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>v4.0.0 2026-01-21</h5>
+                        <ul>
+                            <li>UI优化</li>
+                            <li>修复了传送卡地底的问题</li>
+                            <li>优化修复若干问题</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>3.x 系列</h5>
+                        <p>v3.0.1 2026-01-14</p>
+                        <ul>
+                            <li>修复了游戏内无法显示的问题</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>v3.0.0 2026-01-13</h5>
+                        <ul>
+                            <li>修复问题：解决旧版潜在脚本执行冲突，重构框架以显著提升稳定性</li>
+                            <li>优化体验：优化功能执行逻辑，降低游戏卡顿概率；改善用户引导，使游戏内提示更友好</li>
+                            <li>新增功能：支持自动 JSON 配置文件；新增 F5 键呼出的可视化菜单，可通过方向键导航、回车键确认，操作直观</li>
+                            <li>保留便捷操作：菜单关闭时，仍可使用 Num1（恢复状态等）小键盘快捷键快速操作</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>2.x 系列</h5>
+                        <p>v2.0.2 Beta 2026-01-12</p>
+                        <ul>
+                            <li>修复了诸多问题</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>v2.0.1 Beta 2026-01-09</h5>
+                        <ul>
+                            <li>大范围重新编写，目前暂时移除了EF框架以及UI设计</li>
+                            <li>大概在几天后我会带来新版本的更新</li>
+                            <li>修复了若干问题</li>
+                            <li>可能还会有问题，有问题请在评论区留言，我会解决</li>
+                        </ul>
+                    </div>
+                    <div class="log-item">
+                        <h5>1.x 系列</h5>
+                        <p>v1.0.0 Beta 2026-01-09</p>
+                        <ul>
+                            <li>这是一个初代测试版，晚上我会进行更新</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>安装与使用</h3>
+            <ul>
+                <li>兼容 GTA5 最新版 及所有主流模组</li>
+                <li>支持 ScriptHookV 与 ScriptHookVDotNet</li>
+                <li>解压后将所有文件放入 GTA5 根目录</li>
+                <li>游戏内按 `F6` 打开主菜单</li>
+                <li>支持中文</li>
+            </ul>
+            <p>⚠ 请从官方渠道下载，确保文件安全无捆绑。</p>
+            
+            <h3>下载</h3>
+            <div class="download-links">
+                <a href="#" class="btn">官方下载</a>
+                <a href="#" class="btn">备用链接 1</a>
+                <a href="#" class="btn">备用链接 2</a>
+                <a href="#" class="btn">备用链接 3</a>
+            </div>
+        </div>
+        
+        <p>© 2026 EF Mods ｜ GTA5 模组集合</p>
     </div>
-  </nav>
 
-  <!-- 主要内容容器 -->
-  <main class="main-content">
-    
-    <!-- EF Police Mod 页面 -->
-    <section id="police-mod" class="page active-page">
-      <!-- Hero / 顶部展示 -->
-      <header class="hero">
-        <div class="hero-content">
-          <h1>EF Police Mod</h1>
-          <p class="subtitle">高拟真 · 高自由度 · GTA5 警察玩法模组</p>
-          <p class="version">当前版本：<strong>v5.2.1</strong> ｜ 更新日期：2026-01-31</p>
-          <div class="hero-buttons">
-            <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/287526" target="_blank">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-download"></i>
-              立即下载
-            </a>
-            <a class="btn ghost btn-liquid" href="#video">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-play-circle"></i>
-              观看演示
-            </a>
-          </div>
-        </div>
-      </header>
-
-      <!-- 模组介绍 -->
-      <section class="section" id="about">
-        <h2>模组介绍</h2>
-        <p>
-          <strong>EF Police Mod</strong> 是一款专注于<strong>真实执法流程与嫌疑人行为逻辑</strong>的 GTA5 警察模组。
-          模组采用全新 5.x 架构，从底层行为系统重构，强调稳定性、可拓展性与沉浸式体验。
-        </p>
-        <ul class="features">
-          <li>警用终端系统，自由接警与任务选择</li>
-          <li>嫌疑人性格与风险等级系统（普通 / 中危 / 高危）</li>
-          <li>真实拘捕、逼停、反抗与追车流程</li>
-          <li>模块化逻辑，持续迭代更新</li>
-        </ul>
-      </section>
-
-      <!-- 视频展示 -->
-      <section class="section" id="video">
-        <h2>实机演示</h2>
-        <div class="video-wrapper">
-          <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=115988662131443&bvid=BV14L6CBYEPr&cid=35727936989&p=1"
-            scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
-        </div>
-      </section>
-
-      <!-- 安装与使用说明 -->
-      <section class="section" id="install">
-        <h2>安装与使用说明</h2>
-        <ul class="install-list">
-          <li>必须使用 <strong>ScriptHook</strong> / <strong>ScriptHookVDotNet3</strong></li>
-          <li>推荐使用最新版本，直接覆盖安装</li>
-          <li>将 <strong>DLL 文件</strong> 放入 <code>/scripts</code> 文件夹（若没有请新建）</li>
-          <li>官网地址：<a href="https://www.wanjiadongli.com" target="_blank">https://www.wanjiadongli.com</a></li>
-          <li>模组下载地址：<a href="https://www.wanjiadongli.com/mods/287526" target="_blank">玩家动力 - EF Police Mod</a></li>
-        </ul>
-        <p class="warning">⚠ 本模组仅在 <strong>玩家动力网</strong> 发布原创版本，其余来源均为假冒。</p>
-      </section>
-
-      <!-- 更新日志 -->
-      <section class="section" id="changelog">
-        <h2>更新日志</h2>
-        
-        <!-- 版本筛选 -->
-        <div class="version-filter">
-          <button class="filter-btn btn-liquid active" data-filter="all">
-            <span class="liquid-refraction"></span>
-            全部版本
-          </button>
-          <button class="filter-btn btn-liquid" data-filter="5">
-            <span class="liquid-refraction"></span>
-            5.x 系列
-          </button>
-          <button class="filter-btn btn-liquid" data-filter="4">
-            <span class="liquid-refraction"></span>
-            4.x 系列
-          </button>
-        </div>
-
-        <div class="log-container">
-          <!-- 5.x 系列 -->
-          <div class="log-group" data-version="5">
-            <h3 class="log-title">5.x 系列（当前维护）</h3>
-            
-            <details class="log-block" id="log-5.2.1">
-              <summary class="log-header">
-                <span class="log-version">v5.2.1</span>
-                <span class="log-date">2026-01-31</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>警用终端 UI 大幅改进</li>
-                  <li>逼停自动化：车内即可操作，E 键控制上下车</li>
-                  <li>指令距离限制放宽（避免跨地图控制）</li>
-                  <li>高危嫌疑人反抗行为大幅改进</li>
-                  <li>清理重复逻辑与提示文本</li>
-                  <li>全面优化 UI 视觉效果</li>
-                  <li>增强日志系统，便于错误定位</li>
-                  <li>修复多种极端情况下的 Bug</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="log-block" id="log-5.2.0">
-              <summary class="log-header">
-                <span class="log-version">v5.2.0</span>
-                <span class="log-date">2026-01-30</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>推出更自由的警用终端系统</li>
-                  <li>支持步行 / 追车两种任务模式</li>
-                  <li>追车嫌疑人新增普通 / 中危 / 高危档位</li>
-                  <li>新增拒停逃逸与武装反抗概率机制</li>
-                  <li>嫌疑人下车行为更加自然</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="log-block" id="log-5.1.1">
-              <summary class="log-header">
-                <span class="log-version">v5.1.1</span>
-                <span class="log-date">2026-01-29</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>紧急修复嫌疑人无法反抗的问题</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="log-block" id="log-5.1.0">
-              <summary class="log-header">
-                <span class="log-version">v5.1.0</span>
-                <span class="log-date">2026-01-29</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>新增警用终端系统，可自由接警</li>
-                  <li>优化嫌疑人上车后的导航路径逻辑</li>
-                  <li>新增多处帮助文本提示</li>
-                  <li>修复若干已知 Bug</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="log-block" id="log-5.0.x">
-              <summary class="log-header">
-                <span class="log-version">v5.0.x</span>
-                <span class="log-date">2026-01</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>重构嫌疑人行为与状态系统</li>
-                  <li>新增执法评分系统</li>
-                  <li>大幅提升整体稳定性</li>
-                </ul>
-              </div>
-            </details>
-          </div>
-
-          <!-- 4.x 系列 -->
-          <div class="log-group" data-version="4">
-            <h3 class="log-title">4.x 系列（停止维护）</h3>
-
-            <details class="log-block" id="log-4.0.5">
-              <summary class="log-header">
-                <span class="log-version">v4.0.5</span>
-                <span class="log-date">2026-01-17</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>4.x 系列最终版本</li>
-                  <li>整体可玩，除菜单问题外较稳定</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="log-block" id="log-4.0.0">
-              <summary class="log-header">
-                <span class="log-version">v4.0.0 – v4.0.4</span>
-                <span class="log-date">2026-01</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>修复接警、菜单、嫌疑人显示、增援逻辑等大量问题</li>
-                  <li>新增跟随 / 上车系统</li>
-                  <li>优化快捷键冲突</li>
-                  <li>早期架构版本，已下架</li>
-                </ul>
-              </div>
-            </details>
-          </div>
-        </div>
-        
-        <!-- 折叠全部按钮 -->
-        <div class="collapse-buttons">
-          <button class="btn ghost small" id="collapse-all">
-            <i class="fas fa-chevron-up"></i> 全部折叠
-          </button>
-          <button class="btn ghost small" id="expand-all">
-            <i class="fas fa-chevron-down"></i> 全部展开
-          </button>
-        </div>
-      </section>
-
-      <!-- 下载区 -->
-      <section class="section" id="download">
-        <h2>下载</h2>
-        <div class="download-card">
-          <h3>EF Police Mod v5.2.1</h3>
-          <div class="download-buttons">
-            <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/287526" target="_blank">
-              <span class="liquid-refraction"></span>
-              玩家动力
-            </a>
-            <a class="btn ghost btn-liquid" href="#">
-              <span class="liquid-refraction"></span>
-              百度网盘（预留）
-            </a>
-            <a class="btn ghost btn-liquid" href="#">
-              <span class="liquid-refraction"></span>
-              夸克网盘（预留）
-            </a>
-            <a class="btn ghost btn-liquid" href="#">
-              <span class="liquid-refraction"></span>
-              123 云盘（预留）
-            </a>
-          </div>
-        </div>
-      </section>
-    </section>
-
-    <!-- EF 宇宇修改器 页面 -->
-    <section id="yuyu-tool" class="page">
-      <header class="hero">
-        <div class="hero-content">
-          <h1>EF 宇宇修改器</h1>
-          <p class="subtitle">重新定义游戏的修改器，麻雀虽小，五脏俱全</p>
-          <p class="version">当前版本：<strong>v4.1.1</strong> ｜ 更新日期：2026-01-31</p>
-          <div class="hero-buttons">
-            <a class="btn primary btn-liquid" href="#" target="_blank">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-download"></i>
-              立即下载
-            </a>
-            <a class="btn ghost btn-liquid" href="#yuyu-video">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-play-circle"></i>
-              观看演示
-            </a>
-          </div>
-        </div>
-      </header>
-
-      <!-- 功能介绍 -->
-      <section class="section" id="yuyu-about">
-        <h2>功能特色</h2>
-        <p>
-          <strong>EF 宇宇修改器</strong> 这是一个重新定义游戏的修改器，内置绝大多数的功能供您使用，麻雀虽小，五脏俱全，这是您的万能助手！
-          采用模块化设计，界面简洁直观，操作流畅自然，支持实时热键配置与自定义脚本。
-        </p>
-        <ul class="features">
-          <li>车辆生成与属性修改系统</li>
-          <li>角色模型与属性自定义</li>
-          <li>世界环境与天气控制</li>
-          <li>任务编辑器与剧情修改</li>
-          <li>武器与载具数据库</li>
-          <li>多人模式增强功能</li>
-        </ul>
-      </section>
-
-      <!-- 视频展示 -->
-      <section class="section" id="yuyu-video">
-        <h2>功能演示</h2>
-        <div class="video-wrapper">
-          <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=115988494358157&bvid=BV1gS6CBgEvC&cid=35726953885&p=1" 
-            scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
-        </div>
-      </section>
-
-      <!-- 更新日志 -->
-      <section class="section" id="yuyu-changelog">
-        <h2>更新日志</h2>
-        
-        <!-- 版本筛选 -->
-        <div class="version-filter">
-          <button class="filter-btn btn-liquid active" data-filter="all">
-            <span class="liquid-refraction"></span>
-            全部版本
-          </button>
-          <button class="filter-btn btn-liquid" data-filter="4">
-            <span class="liquid-refraction"></span>
-            4.x 系列
-          </button>
-          <button class="filter-btn btn-liquid" data-filter="3">
-            <span class="liquid-refraction"></span>
-            3.x 系列
-          </button>
-          <button class="filter-btn btn-liquid" data-filter="2">
-            <span class="liquid-refraction"></span>
-            2.x 系列
-          </button>
-          <button class="filter-btn btn-liquid" data-filter="1">
-            <span class="liquid-refraction"></span>
-            1.x 系列
-          </button>
-        </div>
-        
-        <div class="log-container">
-          <!-- 4.x 系列 -->
-          <div class="log-group" data-version="4">
-            <h3 class="log-title">4.x 系列</h3>
-            
-            <details class="log-block" id="log-4.1.1">
-              <summary class="log-header">
-                <span class="log-version">v4.1.1</span>
-                <span class="log-date">2026-01-31</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>修复了配置文件无法正常保存的问题</li>
-                  <li>修复了FOV无法切换的问题</li>
-                  <li>修复了降低画质无法生效的问题</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="log-block" id="log-4.0.0">
-              <summary class="log-header">
-                <span class="log-version">v4.0.0</span>
-                <span class="log-date">2026-01-21</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>UI优化</li>
-                  <li>修复了传送卡地底的问题</li>
-                  <li>优化修复若干问题</li>
-                </ul>
-              </div>
-            </details>
-          </div>
-
-          <!-- 3.x 系列 -->
-          <div class="log-group" data-version="3">
-            <h3 class="log-title">3.x 系列</h3>
-
-            <details class="log-block" id="log-3.0.1">
-              <summary class="log-header">
-                <span class="log-version">v3.0.1</span>
-                <span class="log-date">2026-01-14</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>修复了游戏内无法显示的问题</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="log-block" id="log-3.0.0">
-              <summary class="log-header">
-                <span class="log-version">v3.0.0</span>
-                <span class="log-date">2026-01-13</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>修复问题：解决旧版潜在脚本执行冲突，重构框架以显著提升稳定性</li>
-                  <li>优化体验：优化功能执行逻辑，降低游戏卡顿概率；改善用户引导，使游戏内提示更友好</li>
-                  <li>新增功能：支持自动 JSON 配置文件；新增 F5 键呼出的可视化菜单，可通过方向键导航、回车键确认，操作直观</li>
-                  <li>保留便捷操作：菜单关闭时，仍可使用 Num1（恢复状态等）小键盘快捷键快速操作</li>
-                </ul>
-              </div>
-            </details>
-          </div>
-
-          <!-- 2.x 系列 -->
-          <div class="log-group" data-version="2">
-            <h3 class="log-title">2.x 系列</h3>
-
-            <details class="log-block" id="log-2.0.2">
-              <summary class="log-header">
-                <span class="log-version">v2.0.2 Beta</span>
-                <span class="log-date">2026-01-12</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>修复了诸多问题</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="log-block" id="log-2.0.1">
-              <summary class="log-header">
-                <span class="log-version">v2.0.1 Beta</span>
-                <span class="log-date">2026-01-09</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>大范围重新编写，目前暂时移除了EF框架以及UI设计</li>
-                  <li>大概在几天后我会带来新版本的更新</li>
-                  <li>修复了若干问题</li>
-                  <li>可能还会有问题，有问题请在评论区留言，我会解决🤗</li>
-                </ul>
-              </div>
-            </details>
-          </div>
-
-          <!-- 1.x 系列 -->
-          <div class="log-group" data-version="1">
-            <h3 class="log-title">1.x 系列</h3>
-
-            <details class="log-block" id="log-1.0.0">
-              <summary class="log-header">
-                <span class="log-version">v1.0.0 Beta</span>
-                <span class="log-date">2026-01-09</span>
-                <i class="fas fa-chevron-down log-icon"></i>
-              </summary>
-              <div class="log-content">
-                <ul>
-                  <li>这是一个初代测试版，晚上我会进行更新</li>
-                </ul>
-              </div>
-            </details>
-          </div>
-        </div>
-        
-        <!-- 折叠全部按钮 -->
-        <div class="collapse-buttons">
-          <button class="btn ghost small yuyu-collapse-all">
-            <i class="fas fa-chevron-up"></i> 全部折叠
-          </button>
-          <button class="btn ghost small yuyu-expand-all">
-            <i class="fas fa-chevron-down"></i> 全部展开
-          </button>
-        </div>
-      </section>
-
-      <!-- 安装说明 -->
-      <section class="section" id="yuyu-install">
-        <h2>安装与使用</h2>
-        <ul class="install-list">
-          <li>兼容 <strong>GTA5 最新版</strong> 及所有主流模组</li>
-          <li>支持 <strong>ScriptHookV</strong> 与 <strong>ScriptHookVDotNet</strong></li>
-          <li>解压后将所有文件放入 GTA5 根目录</li>
-          <li>游戏内按 <code>F5</code> 打开主菜单</li>
-          <li>支持中文/英文界面切换</li>
-        </ul>
-        <p class="warning">⚠ 请从官方渠道下载，确保文件安全无捆绑。</p>
-      </section>
-
-      <!-- 下载区 -->
-      <section class="section" id="yuyu-download">
-        <h2>下载</h2>
-        <div class="download-card">
-          <h3>EF 宇宇修改器 v4.1.1</h3>
-          <div class="download-buttons">
-            <a class="btn primary btn-liquid" href="#" target="_blank">
-              <span class="liquid-refraction"></span>
-              官方下载
-            </a>
-            <a class="btn ghost btn-liquid" href="#">
-              <span class="liquid-refraction"></span>
-              备用链接 1
-            </a>
-            <a class="btn ghost btn-liquid" href="#">
-              <span class="liquid-refraction"></span>
-              备用链接 2
-            </a>
-            <a class="btn ghost btn-liquid" href="#">
-              <span class="liquid-refraction"></span>
-              备用链接 3
-            </a>
-          </div>
-        </div>
-      </section>
-    </section>
-  </main>
-
-  <!-- 页脚 -->
-  <footer class="footer">
-    <p>© 2026 EF Mods ｜ GTA5 模组集合</p>
-  </footer>
-
-  <!-- JavaScript 文件 -->
-  <script src="main.js"></script>
-  <script src="liquid-button.js"></script>
-  <script src="log-animations.js"></script>
-  
-  <!-- 内联基础交互脚本 -->
-  <script>
-    // 主题切换功能
-    document.addEventListener('DOMContentLoaded', function() {
-      const themeToggle = document.getElementById('theme-toggle');
-      const themeIcon = themeToggle.querySelector('i');
-      
-      // 初始化主题
-      const savedTheme = localStorage.getItem('efmods-theme') || 'light';
-      document.body.setAttribute('data-theme', savedTheme);
-      updateThemeIcon(savedTheme);
-      
-      // 主题切换
-      themeToggle.addEventListener('click', function() {
-        const currentTheme = document.body.getAttribute('data-theme');
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        
-        document.body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('efmods-theme', newTheme);
-        updateThemeIcon(newTheme);
-        
-        themeToggle.style.transform = 'scale(0.9)';
-        setTimeout(() => {
-          themeToggle.style.transform = 'scale(1)';
-        }, 150);
-      });
-      
-      function updateThemeIcon(theme) {
-        if (theme === 'dark') {
-          themeIcon.className = 'fas fa-sun';
-          themeToggle.setAttribute('title', '切换到浅色主题');
-        } else {
-          themeIcon.className = 'fas fa-moon';
-          themeToggle.setAttribute('title', '切换到深色主题');
-        }
-      }
-      
-      // 页面切换基础功能
-      const navItems = document.querySelectorAll('.nav-item');
-      const pages = document.querySelectorAll('.page');
-      
-      navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-          e.preventDefault();
-          const pageId = this.getAttribute('href');
-          
-          // 更新导航状态
-          navItems.forEach(nav => nav.classList.remove('active'));
-          this.classList.add('active');
-          
-          // 切换页面
-          pages.forEach(page => {
-            page.classList.remove('active-page');
-          });
-          
-          const targetPage = document.querySelector(pageId);
-          if (targetPage) {
-            setTimeout(() => {
-              targetPage.classList.add('active-page');
-              window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-              });
-            }, 10);
-          }
-          
-          // 更新URL
-          window.history.pushState(null, '', pageId);
-        });
-      });
-      
-      // 处理浏览器前进/后退
-      window.addEventListener('popstate', function() {
-        const pageId = window.location.hash || '#police-mod';
-        const targetNav = document.querySelector(`.nav-item[href="${pageId}"]`);
-        const targetPage = document.querySelector(pageId);
-        
-        if (targetNav && targetPage) {
-          navItems.forEach(nav => nav.classList.remove('active'));
-          targetNav.classList.add('active');
-          
-          pages.forEach(page => {
-            page.classList.remove('active-page');
-          });
-          
-          setTimeout(() => {
-            targetPage.classList.add('active-page');
-          }, 10);
-        }
-      });
-    });
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
