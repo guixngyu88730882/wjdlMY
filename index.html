@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body data-theme="light">
 
   <!-- 固定导航栏 -->
   <nav class="navbar">
@@ -22,6 +22,11 @@
           <i class="fas fa-tools"></i>
           EF 宇宇修改器
         </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" title="切换主题">
+          <i class="fas fa-moon"></i>
+        </button>
       </div>
     </div>
   </nav>
@@ -246,8 +251,8 @@
       <header class="hero">
         <div class="hero-content">
           <h1>EF 宇宇修改器</h1>
-          <p class="subtitle">多功能 · 稳定高效 · GTA5 游戏增强工具</p>
-          <p class="version">当前版本：<strong>v3.5.0</strong> ｜ 更新日期：2026-01-31</p>
+          <p class="subtitle">重新定义游戏的修改器，麻雀虽小，五脏俱全</p>
+          <p class="version">当前版本：<strong>v4.1.1</strong> ｜ 更新日期：2026-01-31</p>
           <div class="hero-buttons">
             <a class="btn primary" href="#" target="_blank">立即下载</a>
             <a class="btn ghost" href="#yuyu-video">观看演示</a>
@@ -259,16 +264,16 @@
       <section class="section" id="yuyu-about">
         <h2>功能特色</h2>
         <p>
-          <strong>EF 宇宇修改器</strong> 是一款集成了多种实用功能的 GTA5 游戏增强工具。
-          采用模块化设计，界面简洁直观，操作流畅自然，支持实时热键配置与自定义脚本。
+          <strong>EF 宇宇修改器</strong> 这是一个重新定义游戏的修改器，内置绝大多数的功能供您使用，麻雀虽小，五脏俱全，这是您的万能助手！
+          采用模块化设计，界面简洁直观，操作流畅自然，支持保存ini配置文件读取。
         </p>
         <ul class="features">
           <li>车辆生成与属性修改系统</li>
           <li>角色模型与属性自定义</li>
           <li>世界环境与天气控制</li>
-          <li>任务编辑器与剧情修改</li>
+          <li>所有线上的武器都能刷</li>
           <li>武器与载具数据库</li>
-          <li>多人模式增强功能</li>
+          <li>可刷出线上载具</li>
         </ul>
       </section>
 
@@ -278,6 +283,144 @@
         <div class="video-wrapper">
           <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=115988494358157&bvid=BV1gS6CBgEvC&cid=35726953885&p=1" 
             scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+        </div>
+      </section>
+
+      <!-- 更新日志 -->
+      <section class="section" id="yuyu-changelog">
+        <h2>更新日志</h2>
+        
+        <div class="log-container">
+          <!-- 4.x 系列 -->
+          <div class="log-group">
+            <h3 class="log-title">4.x 系列</h3>
+            
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v4.1.1</span>
+                <span class="log-date">2026-01-31</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>修复了配置文件无法正常保存的问题</li>
+                  <li>修复了FOV无法切换的问题</li>
+                  <li>修复了降低画质无法生效的问题</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v4.0.0</span>
+                <span class="log-date">2026-01-21</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>UI优化</li>
+                  <li>修复了传送卡地底的问题</li>
+                  <li>优化修复若干问题</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <!-- 3.x 系列 -->
+          <div class="log-group">
+            <h3 class="log-title">3.x 系列</h3>
+
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v3.0.1</span>
+                <span class="log-date">2026-01-14</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>修复了游戏内无法显示的问题</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v3.0.0</span>
+                <span class="log-date">2026-01-13</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>修复问题：解决旧版潜在脚本执行冲突，重构框架以显著提升稳定性</li>
+                  <li>优化体验：优化功能执行逻辑，降低游戏卡顿概率；改善用户引导，使游戏内提示更友好</li>
+                  <li>新增功能：支持自动 JSON 配置文件；新增 F5 键呼出的可视化菜单，可通过方向键导航、回车键确认，操作直观</li>
+                  <li>保留便捷操作：菜单关闭时，仍可使用 Num1（恢复状态等）小键盘快捷键快速操作</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <!-- 2.x 系列 -->
+          <div class="log-group">
+            <h3 class="log-title">2.x 系列</h3>
+
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v2.0.2 Beta</span>
+                <span class="log-date">2026-01-12</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>修复了诸多问题</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v2.0.1 Beta</span>
+                <span class="log-date">2026-01-09</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>大范围重新编写，目前暂时移除了EF框架以及UI设计</li>
+                  <li>大概在几天后我会带来新版本的更新</li>
+                  <li>修复了若干问题</li>
+                  <li>可能还会有问题，有问题请在评论区留言，我会解决</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <!-- 1.x 系列 -->
+          <div class="log-group">
+            <h3 class="log-title">1.x 系列</h3>
+
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v1.0.0 Beta</span>
+                <span class="log-date">2026-01-09</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>这是一个初代测试版，晚上我会进行更新</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </div>
+        
+        <!-- 折叠全部按钮 -->
+        <div class="collapse-buttons">
+          <button class="btn ghost small yuyu-collapse-all">
+            <i class="fas fa-chevron-up"></i> 全部折叠
+          </button>
+          <button class="btn ghost small yuyu-expand-all">
+            <i class="fas fa-chevron-down"></i> 全部展开
+          </button>
         </div>
       </section>
 
@@ -298,7 +441,7 @@
       <section class="section" id="yuyu-download">
         <h2>下载</h2>
         <div class="download-card">
-          <h3>EF 宇宇修改器 v3.5.0</h3>
+          <h3>EF 宇宇修改器 v4.1.1</h3>
           <div class="download-buttons">
             <a class="btn primary" href="#" target="_blank">官方下载</a>
             <a class="btn ghost" href="#">备用链接 1</a>
