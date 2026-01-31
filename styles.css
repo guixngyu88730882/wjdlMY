@@ -131,6 +131,8 @@ i.fas.fa-chevron-up::before { content: "▴"; }
 
 i.fas.fa-info-circle::before { content: "ℹ"; }
 
+i.fas.fa-home::before { content: "⌂"; }
+
 /* 导航栏（液态玻璃） */
 .navbar {
   position: fixed;
@@ -378,6 +380,13 @@ i.fas.fa-info-circle::before { content: "ℹ"; }
   cursor: pointer;
   border: none;
   outline: none;
+
+  /* 更像原生 UI 的“按压手感” */
+  transform: translateZ(0);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.99);
 }
 
 .btn.primary {
@@ -545,6 +554,9 @@ i.fas.fa-info-circle::before { content: "ℹ"; }
   margin: 0 auto;
   padding: 96px 24px;
   scroll-margin-top: calc(var(--nav-height) + 18px);
+
+  /* 更“系统级”的节奏与层次 */
+  position: relative;
 }
 
 .section h2 {
@@ -587,9 +599,13 @@ details.log-block,
 }
 
 .features li::after,
+
 details.log-block::after,
+
 .download-card::after,
+
 .video-wrapper::after,
+
 .filter-btn::after {
   content: '';
   position: absolute;
@@ -597,35 +613,57 @@ details.log-block::after,
   border-radius: inherit;
   pointer-events: none;
 
-  /* 轻微高光 + 边缘折射 */
+  /*
+    伪“光线追踪/折射”质感：
+    - 鼠标聚光（已有 mouse 变量）
+    - 边缘辉光（更像玻璃边界）
+    - 轻微“焦散”纹理（非常克制，避免花）
+  */
   background:
-    radial-gradient(620px 420px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 122, 255, 0.18), transparent 55%),
-    radial-gradient(520px 340px at calc(var(--mouse-x, 50%) + 10%) calc(var(--mouse-y, 50%) + 8%), rgba(255, 255, 255, 0.14), transparent 60%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.00) 42%);
+    radial-gradient(640px 440px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 122, 255, 0.16), transparent 58%),
+    radial-gradient(520px 340px at calc(var(--mouse-x, 50%) + 10%) calc(var(--mouse-y, 50%) + 8%), rgba(255, 255, 255, 0.13), transparent 62%),
+    conic-gradient(from 180deg at 50% 50%, rgba(0, 122, 255, 0.00), rgba(0, 122, 255, 0.10), rgba(90, 200, 250, 0.00), rgba(0, 122, 255, 0.00)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.00) 55%);
 
-  opacity: 0;
+  /* 默认就有一点点“玻璃边缘”存在感 */
+  opacity: 0.12;
   transform: translateZ(0);
   transition: opacity 0.28s ease;
+
+  /* 让辉光更像从边缘“溢出” */
+  filter: blur(0.2px) saturate(120%);
   z-index: -1;
 }
 
 .features li:hover::after,
+
 details.log-block:hover::after,
+
 .download-card:hover::after,
+
 .video-wrapper:hover::after,
+
 .filter-btn:hover::after {
-  opacity: 1;
+  opacity: 0.70;
 }
 
 [data-theme="dark"] .features li::after,
+
 [data-theme="dark"] details.log-block::after,
+
 [data-theme="dark"] .download-card::after,
+
 [data-theme="dark"] .video-wrapper::after,
+
 [data-theme="dark"] .filter-btn::after {
   background:
-    radial-gradient(640px 440px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(10, 132, 255, 0.26), transparent 58%),
-    radial-gradient(560px 380px at calc(var(--mouse-x, 50%) + 10%) calc(var(--mouse-y, 50%) + 8%), rgba(90, 200, 250, 0.18), transparent 62%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.00) 42%);
+    radial-gradient(680px 480px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(10, 132, 255, 0.22), transparent 60%),
+    radial-gradient(560px 380px at calc(var(--mouse-x, 50%) + 10%) calc(var(--mouse-y, 50%) + 8%), rgba(90, 200, 250, 0.16), transparent 64%),
+    conic-gradient(from 180deg at 50% 50%, rgba(10, 132, 255, 0.00), rgba(10, 132, 255, 0.16), rgba(90, 200, 250, 0.00), rgba(10, 132, 255, 0.00)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.00) 55%);
+
+  opacity: 0.16;
+  filter: blur(0.25px) saturate(135%);
 }
 
 .features {
@@ -633,6 +671,156 @@ details.log-block:hover::after,
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 18px;
+}
+
+/* 首页：产品卡片（更像 Apple 产品展示） */
+.product-grid {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.product-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  box-shadow: var(--shadow-lg);
+
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: var(--transition);
+}
+
+.product-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+
+  /* 继承当前的“伪光线追踪”边缘辉光（稍微克制） */
+  background:
+    radial-gradient(720px 480px at 30% 0%, rgba(0, 122, 255, 0.16), transparent 60%),
+    conic-gradient(from 180deg at 50% 50%, rgba(0, 122, 255, 0.00), rgba(0, 122, 255, 0.10), rgba(90, 200, 250, 0.00), rgba(0, 122, 255, 0.00)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.00) 55%);
+  opacity: 0.16;
+  filter: blur(0.25px) saturate(125%);
+  z-index: -1;
+}
+
+[data-theme="dark"] .product-card::after {
+  background:
+    radial-gradient(760px 520px at 30% 0%, rgba(10, 132, 255, 0.24), transparent 62%),
+    conic-gradient(from 180deg at 50% 50%, rgba(10, 132, 255, 0.00), rgba(10, 132, 255, 0.16), rgba(90, 200, 250, 0.00), rgba(10, 132, 255, 0.00)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.00) 55%);
+  opacity: 0.22;
+  filter: blur(0.3px) saturate(135%);
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: rgba(0, 122, 255, 0.28);
+}
+
+.product-card h3 {
+  font-size: 1.55rem;
+  font-weight: 780;
+  letter-spacing: -0.4px;
+  margin-bottom: 10px;
+  color: var(--text-main);
+}
+
+.product-desc {
+  color: var(--text-sub);
+  max-width: 70ch;
+}
+
+.product-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+/* 首页：产品卡片（更像 Apple 产品展示） */
+.product-grid {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.product-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  box-shadow: var(--shadow-lg);
+
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: var(--transition);
+}
+
+.product-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+
+  /* 继承当前的“伪光线追踪”边缘辉光（稍微克制） */
+  background:
+    radial-gradient(720px 480px at 30% 0%, rgba(0, 122, 255, 0.16), transparent 60%),
+    conic-gradient(from 180deg at 50% 50%, rgba(0, 122, 255, 0.00), rgba(0, 122, 255, 0.10), rgba(90, 200, 250, 0.00), rgba(0, 122, 255, 0.00)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.00) 55%);
+  opacity: 0.16;
+  filter: blur(0.25px) saturate(125%);
+  z-index: -1;
+}
+
+[data-theme="dark"] .product-card::after {
+  background:
+    radial-gradient(760px 520px at 30% 0%, rgba(10, 132, 255, 0.24), transparent 62%),
+    conic-gradient(from 180deg at 50% 50%, rgba(10, 132, 255, 0.00), rgba(10, 132, 255, 0.16), rgba(90, 200, 250, 0.00), rgba(10, 132, 255, 0.00)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.00) 55%);
+  opacity: 0.22;
+  filter: blur(0.3px) saturate(135%);
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: rgba(0, 122, 255, 0.28);
+}
+
+.product-card h3 {
+  font-size: 1.55rem;
+  font-weight: 780;
+  letter-spacing: -0.4px;
+  margin-bottom: 10px;
+  color: var(--text-main);
+}
+
+.product-desc {
+  color: var(--text-sub);
+  max-width: 70ch;
+}
+
+.product-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
 }
 
 .features li {
@@ -645,7 +833,8 @@ details.log-block:hover::after,
 }
 
 .features li:hover {
-  transform: translateY(-10px);
+  /* 悬浮幅度更克制，线条更稳 */
+  transform: translateY(-6px);
   box-shadow: var(--shadow-xl);
   border-color: rgba(0, 122, 255, 0.32) !important;
 }
@@ -842,7 +1031,46 @@ details.log-block:hover::after,
   border-radius: var(--radius);
   padding: 38px;
   box-shadow: var(--shadow-xl);
-  text-align: center;
+  text-align: left;
+
+  /* 线条更干净：让内容保持在“阅读宽度” */
+  position: relative;
+  overflow: hidden;
+}
+
+.download-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+
+  /* 更克制的玻璃高光：顶部细亮边 + 轻微渐变 */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.00) 58%),
+    radial-gradient(900px 300px at 20% 0%, rgba(0, 122, 255, 0.10), transparent 55%);
+  opacity: 0.85;
+}
+
+[data-theme="dark"] .download-card::before {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.00) 58%),
+    radial-gradient(900px 300px at 20% 0%, rgba(10, 132, 255, 0.16), transparent 55%);
+  opacity: 0.80;
+}
+
+.download-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.download-card p {
+  max-width: 72ch;
+  color: var(--text-sub);
+}
+
+.download-card .install-list {
+  max-width: 82ch;
 }
 
 .download-card h3 {

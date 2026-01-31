@@ -89,7 +89,7 @@
   }
 
   function showFromHash(hash) {
-    const safeHash = hash || '#police-mod';
+    const safeHash = hash || '#home';
 
     const pageEl = document.querySelector(safeHash);
     if (pageEl && pageEl.classList.contains('page')) {
@@ -106,7 +106,7 @@
       }
     }
 
-    showPage('#police-mod');
+    showPage('#home');
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -144,10 +144,14 @@
       });
     });
 
-    showFromHash(window.location.hash || '#police-mod');
+    showFromHash(window.location.hash || '#home');
 
     window.addEventListener('popstate', function () {
-      showFromHash(window.location.hash || '#police-mod');
+      showFromHash(window.location.hash || '#home');
+    });
+
+    window.addEventListener('hashchange', function () {
+      showFromHash(window.location.hash || '#home');
     });
 
     window.addEventListener('resize', function () {
