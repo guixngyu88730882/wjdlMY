@@ -41,6 +41,22 @@
     revealEls.forEach(el => io.observe(el));
   }
 
+  function updateNavPill() {
+    const menu = document.querySelector('.nav-menu');
+    const active = document.querySelector('.nav-item.active');
+    if (!menu || !active) return;
+
+    const menuRect = menu.getBoundingClientRect();
+    const aRect = active.getBoundingClientRect();
+
+    const left = Math.max(6, aRect.left - menuRect.left);
+    const width = Math.max(0, aRect.width);
+
+    menu.classList.add('has-pill');
+    menu.style.setProperty('--pill-left', `${left}px`);
+    menu.style.setProperty('--pill-width', `${width}px`);
+  }
+
   function showPage(pageId) {
     const navItems = document.querySelectorAll('.nav-item');
     const pages = document.querySelectorAll('.page');
@@ -52,6 +68,7 @@
 
     navItems.forEach(nav => nav.classList.remove('active'));
     targetNav.classList.add('active');
+    updateNavPill();
 
     pages.forEach(page => page.classList.remove('active-page'));
 
@@ -98,6 +115,10 @@
     window.addEventListener('popstate', function () {
       const pageId = window.location.hash || '#police-mod';
       showPage(pageId);
+    });
+
+    window.addEventListener('resize', function () {
+      updateNavPill();
     });
   });
 })();
