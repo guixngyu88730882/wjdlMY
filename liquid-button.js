@@ -8,10 +8,13 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.btn-liquid');
-    buttons.forEach(btn => {
-      btn.addEventListener('mousemove', (e) => setMouseVars(btn, e));
-      btn.addEventListener('mouseenter', (e) => setMouseVars(btn, e));
+    const targets = document.querySelectorAll(
+      '.btn-liquid, .filter-btn, .features li, details.log-block, .download-card, .video-wrapper'
+    );
+
+    targets.forEach(el => {
+      el.addEventListener('mousemove', (e) => setMouseVars(el, e));
+      el.addEventListener('mouseenter', (e) => setMouseVars(el, e));
     });
   });
 })();

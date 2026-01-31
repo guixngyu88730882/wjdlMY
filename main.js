@@ -57,11 +57,11 @@
     menu.style.setProperty('--pill-width', `${width}px`);
   }
 
-  function showPage(pageId) {
-    const navItems = document.querySelectorAll('.nav-item');
+  function showPage(pageId, anchorId) {
+    const navItems = document.querySelectorAll('.nav-item[data-page]');
     const pages = document.querySelectorAll('.page');
 
-    const targetNav = document.querySelector(`.nav-item[href="${pageId}"]`);
+    const targetNav = document.querySelector(`.nav-item[data-page][href="${pageId}"]`);
     const targetPage = document.querySelector(pageId);
 
     if (!targetNav || !targetPage) return;
@@ -75,8 +75,38 @@
     setTimeout(() => {
       targetPage.classList.add('active-page');
       setupReveal(targetPage);
+
+      if (anchorId) {
+        const anchorEl = document.querySelector(anchorId);
+        if (anchorEl) {
+          anchorEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+      }
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 10);
+  }
+
+  function showFromHash(hash) {
+    const safeHash = hash || '#police-mod';
+
+    const pageEl = document.querySelector(safeHash);
+    if (pageEl && pageEl.classList.contains('page')) {
+      showPage(safeHash);
+      return;
+    }
+
+    const anchorEl = document.querySelector(safeHash);
+    if (anchorEl) {
+      const parentPage = anchorEl.closest('.page');
+      if (parentPage && parentPage.id) {
+        showPage(`#${parentPage.id}`, safeHash);
+        return;
+      }
+    }
+
+    showPage('#police-mod');
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -98,23 +128,26 @@
       });
     }
 
-    const navItems = document.querySelectorAll('.nav-item');
+    const navItems = document.querySelectorAll('.nav-item[data-page]');
     navItems.forEach(item => {
       item.addEventListener('click', function (e) {
         e.preventDefault();
-        const pageId = this.getAttribute('href');
-        if (!pageId) return;
-        showPage(pageId);
-        window.history.pushState(null, '', pageId);
+
+        const pageKey = this.getAttribute('data-page');
+        if (!pageKey) return;
+
+        const pageId = `#${pageKey}`;
+        const anchorId = this.getAttribute('data-anchor');
+
+        showPage(pageId, anchorId);
+        window.history.pushState(null, '', anchorId || pageId);
       });
     });
 
-    const initialPage = window.location.hash || '#police-mod';
-    showPage(initialPage);
+    showFromHash(window.location.hash || '#police-mod');
 
     window.addEventListener('popstate', function () {
-      const pageId = window.location.hash || '#police-mod';
-      showPage(pageId);
+      showFromHash(window.location.hash || '#police-mod');
     });
 
     window.addEventListener('resize', function () {

@@ -129,6 +129,8 @@ i.fas.fa-chevron-down::before { content: "▾"; }
 
 i.fas.fa-chevron-up::before { content: "▴"; }
 
+i.fas.fa-info-circle::before { content: "ℹ"; }
+
 /* 导航栏（液态玻璃） */
 .navbar {
   position: fixed;
@@ -572,6 +574,58 @@ i.fas.fa-chevron-up::before { content: "▴"; }
   border: 1px solid var(--border-light) !important;
   backdrop-filter: blur(18px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+}
+
+/* Apple 发布会感：指针“高光/折射”Spotlight（纯 CSS + 现有鼠标变量） */
+.features li,
+details.log-block,
+.download-card,
+.video-wrapper,
+.filter-btn {
+  position: relative;
+  isolation: isolate;
+}
+
+.features li::after,
+details.log-block::after,
+.download-card::after,
+.video-wrapper::after,
+.filter-btn::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+
+  /* 轻微高光 + 边缘折射 */
+  background:
+    radial-gradient(620px 420px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 122, 255, 0.18), transparent 55%),
+    radial-gradient(520px 340px at calc(var(--mouse-x, 50%) + 10%) calc(var(--mouse-y, 50%) + 8%), rgba(255, 255, 255, 0.14), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.00) 42%);
+
+  opacity: 0;
+  transform: translateZ(0);
+  transition: opacity 0.28s ease;
+  z-index: -1;
+}
+
+.features li:hover::after,
+details.log-block:hover::after,
+.download-card:hover::after,
+.video-wrapper:hover::after,
+.filter-btn:hover::after {
+  opacity: 1;
+}
+
+[data-theme="dark"] .features li::after,
+[data-theme="dark"] details.log-block::after,
+[data-theme="dark"] .download-card::after,
+[data-theme="dark"] .video-wrapper::after,
+[data-theme="dark"] .filter-btn::after {
+  background:
+    radial-gradient(640px 440px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(10, 132, 255, 0.26), transparent 58%),
+    radial-gradient(560px 380px at calc(var(--mouse-x, 50%) + 10%) calc(var(--mouse-y, 50%) + 8%), rgba(90, 200, 250, 0.18), transparent 62%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.00) 42%);
 }
 
 .features {
