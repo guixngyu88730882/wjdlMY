@@ -312,3 +312,74 @@ document.addEventListener('DOMContentLoaded', function() {
     yuyuLatestLog.setAttribute('open', '');
   }
 });
+
+// 在原有代码的末尾添加：
+
+// =============================
+// 液态玻璃按钮与日志动画集成
+// =============================
+
+// 页面切换时重新初始化效果
+function reinitializeEffects() {
+  // 确保页面切换后液态玻璃效果仍然有效
+  setTimeout(() => {
+    if (window.liquidButtons) {
+      window.liquidButtons.init();
+    }
+    if (window.logAnimations) {
+      window.logAnimations.init();
+    }
+  }, 300);
+}
+
+// 监听页面切换事件
+const navItems = document.querySelectorAll('.nav-item');
+navItems.forEach(item => {
+  const originalClick = item.onclick;
+  item.addEventListener('click', function(e) {
+    // 执行原有页面切换逻辑
+    if (originalClick) originalClick.call(this, e);
+    
+    // 页面切换后重新初始化效果
+    setTimeout(reinitializeEffects, 500);
+  });
+});
+
+// 主题切换时调整液态玻璃效果
+const themeToggle = document.getElementById('theme-toggle');
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    // 主题切换后给按钮一点时间重新渲染
+    setTimeout(() => {
+      if (window.liquidButtons) {
+        window.liquidButtons.buttons.forEach(btn => {
+          // 触发重绘以确保CSS变量更新
+          btn.style.transform = 'scale(0.99)';
+          setTimeout(() => {
+            btn.style.transform = '';
+          }, 50);
+        });
+      }
+    }, 100);
+  });
+}
+
+// 动态内容加载支持
+function enhanceNewContent(container) {
+  // 为容器内新添加的按钮和日志块添加效果
+  const newButtons = container.querySelectorAll('.btn:not(.btn-liquid)');
+  const newLogs = container.querySelectorAll('.log-block:not([data-enhanced])');
+  
+  if (window.liquidButtons) {
+    newButtons.forEach(btn => {
+      window.liquidButtons.addButton(btn);
+    });
+  }
+  
+  if (window.logAnimations) {
+    newLogs.forEach(logBlock => {
+      logBlock.dataset.enhanced = 'true';
+      window.logAnimations.addLogBlock(logBlock);
+    });
+  }
+}
