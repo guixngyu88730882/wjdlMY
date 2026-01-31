@@ -26,6 +26,20 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    // 修复部分浏览器/环境下 <summary> 点击被触发两次导致“展开又立刻关闭”
+    document.querySelectorAll('details.log-block > summary').forEach(summary => {
+      let last = 0;
+      summary.addEventListener('click', (e) => {
+        e.preventDefault();
+        const now = Date.now();
+        if (now - last < 220) return;
+        last = now;
+        const details = summary.parentElement;
+        if (!details) return;
+        details.open = !details.open;
+      });
+    });
+
     document.querySelectorAll('section.section').forEach(section => {
       setupFilter(section);
     });
