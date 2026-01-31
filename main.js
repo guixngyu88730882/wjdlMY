@@ -6,10 +6,20 @@
 document.addEventListener('DOMContentLoaded', function() {
   const navItems = document.querySelectorAll('.nav-item');
   const pages = document.querySelectorAll('.page');
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = themeToggle.querySelector('i');
+  
+  // 初始化主题
+  const savedTheme = localStorage.getItem('efmods-theme') || 'light';
+  document.body.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
   
   // 初始化 - 显示当前哈希对应的页面
   const currentHash = window.location.hash || '#police-mod';
   switchPage(currentHash);
+  
+  // 更新导航状态
+  updateNavActive(currentHash);
   
   // 导航点击事件
   navItems.forEach(item => {
@@ -18,8 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const pageId = this.getAttribute('href');
       
       // 更新导航状态
-      navItems.forEach(nav => nav.classList.remove('active'));
-      this.classList.add('active');
+      updateNavActive(pageId);
       
       // 切换页面
       switchPage(pageId);
@@ -33,14 +42,26 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('popstate', function() {
     const pageId = window.location.hash || '#police-mod';
     switchPage(pageId);
+    updateNavActive(pageId);
+  });
+  
+  // 主题切换功能
+  themeToggle.addEventListener('click', function() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
     
-    // 更新导航状态
-    navItems.forEach(nav => {
-      nav.classList.remove('active');
-      if (nav.getAttribute('href') === pageId) {
-        nav.classList.add('active');
-      }
-    });
+    // 应用新主题
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('efmods-theme', newTheme);
+    
+    // 更新图标
+    updateThemeIcon(newTheme);
+    
+    // 添加切换动画
+    themeToggle.style.transform = 'scale(0.9)';
+    setTimeout(() => {
+      themeToggle.style.transform = 'scale(1)';
+    }, 150);
   });
   
   // 页面切换函数
@@ -48,13 +69,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 隐藏所有页面
     pages.forEach(page => {
       page.classList.remove('active-page');
-      page.style.display = 'none';
     });
     
     // 显示目标页面
     const targetPage = document.querySelector(pageId);
     if (targetPage) {
-      targetPage.style.display = 'block';
       setTimeout(() => {
         targetPage.classList.add('active-page');
         // 滚动到顶部
@@ -66,13 +85,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
+  // 更新导航激活状态
+  function updateNavActive(pageId) {
+    navItems.forEach(nav => {
+      nav.classList.remove('active');
+      if (nav.getAttribute('href') === pageId) {
+        nav.classList.add('active');
+      }
+    });
+  }
+  
+  // 更新主题图标
+  function updateThemeIcon(theme) {
+    if (theme === 'dark') {
+      themeIcon.className = 'fas fa-sun';
+      themeToggle.setAttribute('title', '切换到浅色主题');
+    } else {
+      themeIcon.className = 'fas fa-moon';
+      themeToggle.setAttribute('title', '切换到深色主题');
+    }
+  }
+  
   // =============================
   // 更新日志功能
   // =============================
   
-  // 版本筛选功能
+  // 警察模组版本筛选功能
   const filterButtons = document.querySelectorAll('.filter-btn');
-  const logGroups = document.querySelectorAll('.log-group');
+  const logGroups = document.querySelectorAll('#changelog .log-group');
   
   filterButtons.forEach(button => {
     button.addEventListener('click', function() {
@@ -97,22 +137,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // 折叠/展开全部功能
+  // 警察模组折叠/展开全部功能
   const collapseAllBtn = document.getElementById('collapse-all');
   const expandAllBtn = document.getElementById('expand-all');
-  const logBlocks = document.querySelectorAll('.log-block');
+  const policeLogBlocks = document.querySelectorAll('#changelog .log-block');
   
-  collapseAllBtn.addEventListener('click', function() {
-    logBlocks.forEach(block => {
-      block.removeAttribute('open');
+  if (collapseAllBtn && expandAllBtn) {
+    collapseAllBtn.addEventListener('click', function() {
+      policeLogBlocks.forEach(block => {
+        block.removeAttribute('open');
+      });
     });
-  });
+    
+    expandAllBtn.addEventListener('click', function() {
+      policeLogBlocks.forEach(block => {
+        block.setAttribute('open', '');
+      });
+    });
+  }
   
-  expandAllBtn.addEventListener('click', function() {
-    logBlocks.forEach(block => {
-      block.setAttribute('open', '');
+  // 宇宇修改器折叠/展开全部功能
+  const yuyuCollapseAllBtn = document.querySelector('.yuyu-collapse-all');
+  const yuyuExpandAllBtn = document.querySelector('.yuyu-expand-all');
+  const yuyuLogBlocks = document.querySelectorAll('#yuyu-changelog .log-block');
+  
+  if (yuyuCollapseAllBtn && yuyuExpandAllBtn) {
+    yuyuCollapseAllBtn.addEventListener('click', function() {
+      yuyuLogBlocks.forEach(block => {
+        block.removeAttribute('open');
+      });
     });
-  });
+    
+    yuyuExpandAllBtn.addEventListener('click', function() {
+      yuyuLogBlocks.forEach(block => {
+        block.setAttribute('open', '');
+      });
+    });
+  }
   
   // 平滑滚动（锚点）
   document.querySelectorAll('a[href^="#"]:not(.nav-item)').forEach(anchor => {
@@ -126,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
           e.preventDefault();
           
           // 如果目标在另一个页面，先切换到该页面
-          const pageId = href.split('-')[0] === '#yuyu' ? '#yuyu-tool' : '#police-mod';
+          const pageId = href.includes('yuyu') ? '#yuyu-tool' : '#police-mod';
           const currentPage = document.querySelector('.page.active-page').id;
           
           if (pageId === `#${currentPage}`) {
@@ -169,23 +230,36 @@ document.addEventListener('DOMContentLoaded', function() {
   progress.style.zIndex = '9998';
   progress.style.width = '0%';
   progress.style.transition = 'width 0.1s ease';
+  progress.style.opacity = '0';
   document.body.appendChild(progress);
   
   // 滚动监听
   let scrollTimeout;
-  window.addEventListener('scroll', () => {
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+  
+  function updateProgress() {
     const scrollTop = document.documentElement.scrollTop;
     const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     const scrollPercent = (scrollTop / scrollHeight) * 100;
     
     progress.style.width = scrollPercent + '%';
-    
-    // 延迟隐藏进度条
     progress.style.opacity = '1';
+    
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(() => {
       progress.style.opacity = '0';
     }, 1000);
+    
+    lastScrollY = scrollTop;
+    ticking = false;
+  }
+  
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(updateProgress);
+      ticking = true;
+    }
   });
   
   // 滚动渐入效果
@@ -230,5 +304,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const latestLog = document.querySelector('.log-block');
   if (latestLog) {
     latestLog.setAttribute('open', '');
+  }
+  
+  // 初始化：展开宇宇修改器最新版本的日志
+  const yuyuLatestLog = document.querySelector('#yuyu-changelog .log-block');
+  if (yuyuLatestLog) {
+    yuyuLatestLog.setAttribute('open', '');
   }
 });
