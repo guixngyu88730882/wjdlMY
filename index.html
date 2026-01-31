@@ -3,160 +3,316 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EF Police Mod | GTA5 警察模组</title>
+  <title>EF Mods | GTA5 模组</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Hero / 顶部展示 -->
-  <header class="hero">
-    <div class="hero-content">
-      <h1>EF Police Mod</h1>
-      <p class="subtitle">高拟真 · 高自由度 · GTA5 警察玩法模组</p>
-      <p class="version">当前版本：<strong>v5.2.1</strong> ｜ 更新日期：2026-01-31</p>
-      <div class="hero-buttons">
-        <a class="btn primary" href="https://www.wanjiadongli.com/mods/287526" target="_blank">立即下载</a>
-        <a class="btn ghost" href="#video">观看演示</a>
+  <!-- 固定导航栏 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-brand">EF Mods</a>
+      <div class="nav-menu">
+        <a href="#police-mod" class="nav-item active" data-page="police-mod">
+          <i class="fas fa-shield-alt"></i>
+          EF Police Mod
+        </a>
+        <a href="#yuyu-tool" class="nav-item" data-page="yuyu-tool">
+          <i class="fas fa-tools"></i>
+          EF 宇宇修改器
+        </a>
       </div>
     </div>
-  </header>
+  </nav>
 
-  <!-- 模组介绍 -->
-  <section class="section" id="about">
-    <h2>模组介绍</h2>
-    <p>
-      <strong>EF Police Mod</strong> 是一款专注于<strong>真实执法流程与嫌疑人行为逻辑</strong>的 GTA5 警察模组。
-      模组采用全新 5.x 架构，从底层行为系统重构，强调稳定性、可拓展性与沉浸式体验。
-    </p>
-    <ul class="features">
-      <li>警用终端系统，自由接警与任务选择</li>
-      <li>嫌疑人性格与风险等级系统（普通 / 中危 / 高危）</li>
-      <li>真实拘捕、逼停、反抗与追车流程</li>
-      <li>模块化逻辑，持续迭代更新</li>
-    </ul>
-  </section>
+  <!-- 主要内容容器 -->
+  <main class="main-content">
+    
+    <!-- EF Police Mod 页面 -->
+    <section id="police-mod" class="page active-page">
+      <!-- Hero / 顶部展示 -->
+      <header class="hero">
+        <div class="hero-content">
+          <h1>EF Police Mod</h1>
+          <p class="subtitle">高拟真 · 高自由度 · GTA5 警察玩法模组</p>
+          <p class="version">当前版本：<strong>v5.2.1</strong> ｜ 更新日期：2026-01-31</p>
+          <div class="hero-buttons">
+            <a class="btn primary" href="https://www.wanjiadongli.com/mods/287526" target="_blank">立即下载</a>
+            <a class="btn ghost" href="#video">观看演示</a>
+          </div>
+        </div>
+      </header>
 
-  <!-- 视频展示 -->
-  <section class="section" id="video">
-    <h2>实机演示</h2>
-    <div class="video-wrapper">
-      <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=115988662131443&bvid=BV14L6CBYEPr&cid=35727936989&p=1"
-        scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
-    </div>
-  </section>
+      <!-- 模组介绍 -->
+      <section class="section" id="about">
+        <h2>模组介绍</h2>
+        <p>
+          <strong>EF Police Mod</strong> 是一款专注于<strong>真实执法流程与嫌疑人行为逻辑</strong>的 GTA5 警察模组。
+          模组采用全新 5.x 架构，从底层行为系统重构，强调稳定性、可拓展性与沉浸式体验。
+        </p>
+        <ul class="features">
+          <li>警用终端系统，自由接警与任务选择</li>
+          <li>嫌疑人性格与风险等级系统（普通 / 中危 / 高危）</li>
+          <li>真实拘捕、逼停、反抗与追车流程</li>
+          <li>模块化逻辑，持续迭代更新</li>
+        </ul>
+      </section>
 
-  <!-- 安装与使用说明 -->
-  <section class="section" id="install">
-    <h2>安装与使用说明</h2>
-    <ul class="install-list">
-      <li>必须使用 <strong>ScriptHook</strong> / <strong>ScriptHookVDotNet3</strong></li>
-      <li>推荐使用最新版本，直接覆盖安装</li>
-      <li>将 <strong>DLL 文件</strong> 放入 <code>/scripts</code> 文件夹（若没有请新建）</li>
-      <li>官网地址：<a href="https://www.wanjiadongli.com" target="_blank">https://www.wanjiadongli.com</a></li>
-      <li>模组下载地址：<a href="https://www.wanjiadongli.com/mods/287526" target="_blank">玩家动力 - EF Police Mod</a></li>
-    </ul>
-    <p class="warning">⚠ 本模组仅在 <strong>玩家动力网</strong> 发布原创版本，其余来源均为假冒。</p>
-  </section>
+      <!-- 视频展示 -->
+      <section class="section" id="video">
+        <h2>实机演示</h2>
+        <div class="video-wrapper">
+          <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=115988662131443&bvid=BV14L6CBYEPr&cid=35727936989&p=1"
+            scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
+        </div>
+      </section>
 
-  <!-- 更新日志 -->
-<section class="section" id="changelog">
-  <h2>更新日志</h2>
+      <!-- 安装与使用说明 -->
+      <section class="section" id="install">
+        <h2>安装与使用说明</h2>
+        <ul class="install-list">
+          <li>必须使用 <strong>ScriptHook</strong> / <strong>ScriptHookVDotNet3</strong></li>
+          <li>推荐使用最新版本，直接覆盖安装</li>
+          <li>将 <strong>DLL 文件</strong> 放入 <code>/scripts</code> 文件夹（若没有请新建）</li>
+          <li>官网地址：<a href="https://www.wanjiadongli.com" target="_blank">https://www.wanjiadongli.com</a></li>
+          <li>模组下载地址：<a href="https://www.wanjiadongli.com/mods/287526" target="_blank">玩家动力 - EF Police Mod</a></li>
+        </ul>
+        <p class="warning">⚠ 本模组仅在 <strong>玩家动力网</strong> 发布原创版本，其余来源均为假冒。</p>
+      </section>
 
-  <div class="log-group">
-    <h3 class="log-title">5.x 系列（当前维护）</h3>
+      <!-- 更新日志 -->
+      <section class="section" id="changelog">
+        <h2>更新日志</h2>
+        
+        <!-- 版本筛选 -->
+        <div class="version-filter">
+          <button class="filter-btn active" data-filter="all">全部版本</button>
+          <button class="filter-btn" data-filter="5">5.x 系列</button>
+          <button class="filter-btn" data-filter="4">4.x 系列</button>
+        </div>
 
-    <details class="log-block" open>
-      <summary>v5.2.1 — 2026-01-31</summary>
-      <ul>
-        <li>警用终端 UI 大幅改进</li>
-        <li>I 逼停自动化：车内即可操作，E 键控制上下车</li>
-        <li>I 指令距离限制放宽（避免跨地图控制）</li>
-        <li>高危嫌疑人反抗行为大幅改进</li>
-        <li>清理重复逻辑与提示文本</li>
-        <li>全面优化 UI 视觉效果</li>
-        <li>增强日志系统，便于错误定位</li>
-        <li>修复多种极端情况下的 Bug</li>
-      </ul>
-    </details>
+        <div class="log-container">
+          <!-- 5.x 系列 -->
+          <div class="log-group" data-version="5">
+            <h3 class="log-title">5.x 系列（当前维护）</h3>
+            
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v5.2.1</span>
+                <span class="log-date">2026-01-31</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>警用终端 UI 大幅改进</li>
+                  <li>逼停自动化：车内即可操作，E 键控制上下车</li>
+                  <li>指令距离限制放宽（避免跨地图控制）</li>
+                  <li>高危嫌疑人反抗行为大幅改进</li>
+                  <li>清理重复逻辑与提示文本</li>
+                  <li>全面优化 UI 视觉效果</li>
+                  <li>增强日志系统，便于错误定位</li>
+                  <li>修复多种极端情况下的 Bug</li>
+                </ul>
+              </div>
+            </details>
 
-    <details class="log-block" open>
-      <summary>v5.2.0 — 2026-01-30</summary>
-      <ul>
-        <li>推出更自由的警用终端系统</li>
-        <li>支持步行 / 追车两种任务模式</li>
-        <li>追车嫌疑人新增普通 / 中危 / 高危档位</li>
-        <li>新增拒停逃逸与武装反抗概率机制</li>
-        <li>嫌疑人下车行为更加自然</li>
-      </ul>
-    </details>
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v5.2.0</span>
+                <span class="log-date">2026-01-30</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>推出更自由的警用终端系统</li>
+                  <li>支持步行 / 追车两种任务模式</li>
+                  <li>追车嫌疑人新增普通 / 中危 / 高危档位</li>
+                  <li>新增拒停逃逸与武装反抗概率机制</li>
+                  <li>嫌疑人下车行为更加自然</li>
+                </ul>
+              </div>
+            </details>
 
-    <details class="log-block">
-      <summary>v5.1.1 — 2026-01-29</summary>
-      <ul>
-        <li>紧急修复嫌疑人无法反抗的问题</li>
-      </ul>
-    </details>
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v5.1.1</span>
+                <span class="log-date">2026-01-29</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>紧急修复嫌疑人无法反抗的问题</li>
+                </ul>
+              </div>
+            </details>
 
-    <details class="log-block">
-      <summary>v5.1.0 — 2026-01-29</summary>
-      <ul>
-        <li>新增警用终端系统，可自由接警</li>
-        <li>优化嫌疑人上车后的导航路径逻辑</li>
-        <li>新增多处帮助文本提示</li>
-        <li>修复若干已知 Bug</li>
-      </ul>
-    </details>
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v5.1.0</span>
+                <span class="log-date">2026-01-29</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>新增警用终端系统，可自由接警</li>
+                  <li>优化嫌疑人上车后的导航路径逻辑</li>
+                  <li>新增多处帮助文本提示</li>
+                  <li>修复若干已知 Bug</li>
+                </ul>
+              </div>
+            </details>
 
-    <details class="log-block">
-      <summary>v5.0.x — 2026-01</summary>
-      <ul>
-        <li>重构嫌疑人行为与状态系统</li>
-        <li>新增执法评分系统</li>
-        <li>大幅提升整体稳定性</li>
-      </ul>
-    </details>
-  </div>
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v5.0.x</span>
+                <span class="log-date">2026-01</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>重构嫌疑人行为与状态系统</li>
+                  <li>新增执法评分系统</li>
+                  <li>大幅提升整体稳定性</li>
+                </ul>
+              </div>
+            </details>
+          </div>
 
-  <div class="log-group">
-    <h3 class="log-title">4.x 系列（停止维护）</h3>
+          <!-- 4.x 系列 -->
+          <div class="log-group" data-version="4">
+            <h3 class="log-title">4.x 系列（停止维护）</h3>
 
-    <details class="log-block">
-      <summary>v4.0.5 — 2026-01-17</summary>
-      <ul>
-        <li>4.x 系列最终版本</li>
-        <li>整体可玩，除菜单问题外较稳定</li>
-      </ul>
-    </details>
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v4.0.5</span>
+                <span class="log-date">2026-01-17</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>4.x 系列最终版本</li>
+                  <li>整体可玩，除菜单问题外较稳定</li>
+                </ul>
+              </div>
+            </details>
 
-    <details class="log-block">
-      <summary>v4.0.0 – v4.0.4</summary>
-      <ul>
-        <li>修复接警、菜单、嫌疑人显示、增援逻辑等大量问题</li>
-        <li>新增跟随 / 上车系统</li>
-        <li>优化快捷键冲突</li>
-        <li>早期架构版本，已下架</li>
-      </ul>
-    </details>
-  </div>
-</section>
+            <details class="log-block">
+              <summary class="log-header">
+                <span class="log-version">v4.0.0 – v4.0.4</span>
+                <span class="log-date">2026-01</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>修复接警、菜单、嫌疑人显示、增援逻辑等大量问题</li>
+                  <li>新增跟随 / 上车系统</li>
+                  <li>优化快捷键冲突</li>
+                  <li>早期架构版本，已下架</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </div>
+        
+        <!-- 折叠全部按钮 -->
+        <div class="collapse-buttons">
+          <button class="btn ghost small" id="collapse-all">
+            <i class="fas fa-chevron-up"></i> 全部折叠
+          </button>
+          <button class="btn ghost small" id="expand-all">
+            <i class="fas fa-chevron-down"></i> 全部展开
+          </button>
+        </div>
+      </section>
 
-  <!-- 下载区 -->
-  <section class="section" id="download">
-    <h2>下载</h2>
-    <div class="download-card">
-      <h3>EF Police Mod v5.2.1</h3>
-      <div class="download-buttons">
-        <a class="btn primary" href="https://www.wanjiadongli.com/mods/287526" target="_blank">玩家动力</a>
-        <a class="btn ghost" href="#">百度网盘（预留）</a>
-        <a class="btn ghost" href="#">夸克网盘（预留）</a>
-        <a class="btn ghost" href="#">123 云盘（预留）</a>
-      </div>
-    </div>
-  </section>
+      <!-- 下载区 -->
+      <section class="section" id="download">
+        <h2>下载</h2>
+        <div class="download-card">
+          <h3>EF Police Mod v5.2.1</h3>
+          <div class="download-buttons">
+            <a class="btn primary" href="https://www.wanjiadongli.com/mods/287526" target="_blank">玩家动力</a>
+            <a class="btn ghost" href="#">百度网盘（预留）</a>
+            <a class="btn ghost" href="#">夸克网盘（预留）</a>
+            <a class="btn ghost" href="#">123 云盘（预留）</a>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- EF 宇宇修改器 页面 -->
+    <section id="yuyu-tool" class="page">
+      <header class="hero">
+        <div class="hero-content">
+          <h1>EF 宇宇修改器</h1>
+          <p class="subtitle">多功能 · 稳定高效 · GTA5 游戏增强工具</p>
+          <p class="version">当前版本：<strong>v3.5.0</strong> ｜ 更新日期：2026-01-31</p>
+          <div class="hero-buttons">
+            <a class="btn primary" href="#" target="_blank">立即下载</a>
+            <a class="btn ghost" href="#yuyu-video">观看演示</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- 功能介绍 -->
+      <section class="section" id="yuyu-about">
+        <h2>功能特色</h2>
+        <p>
+          <strong>EF 宇宇修改器</strong> 是一款集成了多种实用功能的 GTA5 游戏增强工具。
+          采用模块化设计，界面简洁直观，操作流畅自然，支持实时热键配置与自定义脚本。
+        </p>
+        <ul class="features">
+          <li>车辆生成与属性修改系统</li>
+          <li>角色模型与属性自定义</li>
+          <li>世界环境与天气控制</li>
+          <li>任务编辑器与剧情修改</li>
+          <li>武器与载具数据库</li>
+          <li>多人模式增强功能</li>
+        </ul>
+      </section>
+
+      <!-- 视频展示 -->
+      <section class="section" id="yuyu-video">
+        <h2>功能演示</h2>
+        <div class="video-wrapper">
+          <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=115988494358157&bvid=BV1gS6CBgEvC&cid=35726953885&p=1" 
+            scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+        </div>
+      </section>
+
+      <!-- 安装说明 -->
+      <section class="section" id="yuyu-install">
+        <h2>安装与使用</h2>
+        <ul class="install-list">
+          <li>兼容 <strong>GTA5 最新版</strong> 及所有主流模组</li>
+          <li>支持 <strong>ScriptHookV</strong> 与 <strong>ScriptHookVDotNet</strong></li>
+          <li>解压后将所有文件放入 GTA5 根目录</li>
+          <li>游戏内按 <code>F5</code> 打开主菜单</li>
+          <li>支持中文/英文界面切换</li>
+        </ul>
+        <p class="warning">⚠ 请从官方渠道下载，确保文件安全无捆绑。</p>
+      </section>
+
+      <!-- 下载区 -->
+      <section class="section" id="yuyu-download">
+        <h2>下载</h2>
+        <div class="download-card">
+          <h3>EF 宇宇修改器 v3.5.0</h3>
+          <div class="download-buttons">
+            <a class="btn primary" href="#" target="_blank">官方下载</a>
+            <a class="btn ghost" href="#">备用链接 1</a>
+            <a class="btn ghost" href="#">备用链接 2</a>
+            <a class="btn ghost" href="#">备用链接 3</a>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
 
   <!-- 页脚 -->
   <footer class="footer">
-    <p>© 2026 EF Police Mod ｜ GTA5 警察模组</p>
+    <p>© 2026 EF Mods ｜ GTA5 模组集合</p>
   </footer>
 
   <script src="main.js"></script>
