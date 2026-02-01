@@ -1,0 +1,188 @@
+/* base.css：变量 / 全局重置 / 通用可访问性 */
+
+:root {
+  --bg-main: #ffffff;
+  --bg-secondary: #f6f7fb;
+  --bg-card: rgba(255, 255, 255, 0.62);
+  --text-main: #1d1d1f;
+  --text-sub: rgba(29, 29, 31, 0.68);
+  --text-light: rgba(29, 29, 31, 0.42);
+
+  --blue: #007aff;
+  --blue-light: #409cff;
+  --red: #ff3b30;
+  --green: #34c759;
+
+  --border: rgba(0, 0, 0, 0.12);
+  --border-light: rgba(0, 0, 0, 0.08);
+
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 60px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 30px 120px rgba(0, 0, 0, 0.16);
+  --shadow-nav: 0 10px 30px rgba(0, 0, 0, 0.06);
+
+  --transition: all 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+  --transition-fast: all 0.2s ease;
+
+  --container: 1080px;
+  --measure: 72ch;
+  --measure-wide: 82ch;
+
+  --text-base: 16px;
+  --lh-base: 1.65;
+
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 20px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --nav-height: 70px;
+  --radius: 18px;
+  --radius-sm: 12px;
+
+  /* 链接颜色：提升玻璃背景上的对比度（WCAG AA 向） */
+  --link: #0056d6;
+  --link-hover: #0047b2;
+}
+
+[data-theme="dark"] {
+  --bg-main: #000000;
+  --bg-secondary: #0b0b0c;
+  --bg-card: rgba(28, 28, 30, 0.62);
+  --text-main: rgba(245, 245, 247, 0.98);
+  --text-sub: rgba(245, 245, 247, 0.70);
+  --text-light: rgba(245, 245, 247, 0.42);
+
+  --border: rgba(255, 255, 255, 0.14);
+  --border-light: rgba(255, 255, 255, 0.10);
+
+  --shadow: 0 10px 34px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 70px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0 38px 140px rgba(0, 0, 0, 0.55);
+  --shadow-nav: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+  --blue: #0a84ff;
+  --blue-light: #5ac8fa;
+
+  --glow-blue: rgba(10, 132, 255, 0.40);
+  --glow-cyan: rgba(90, 200, 250, 0.35);
+
+  --link: #6bb6ff;
+  --link-hover: #8ac6ff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: var(--text-base);
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.01em;
+
+  background: radial-gradient(1200px 700px at 20% 0%, rgba(0, 122, 255, 0.10), transparent 55%),
+    radial-gradient(900px 600px at 85% 25%, rgba(52, 199, 89, 0.10), transparent 55%),
+    radial-gradient(900px 650px at 50% 95%, rgba(255, 59, 48, 0.08), transparent 60%),
+    linear-gradient(180deg, var(--bg-secondary), var(--bg-main));
+  color: var(--text-main);
+  line-height: var(--lh-base);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.012) 0px, rgba(0,0,0,0.012) 1px, transparent 1px, transparent 4px);
+  mix-blend-mode: overlay;
+  opacity: 0.25;
+  z-index: 0;
+}
+
+.main-content,
+.navbar,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(0, 122, 255, 0.35);
+  outline-offset: 3px;
+}
+
+a {
+  color: var(--link);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+/* 兼容原来 .fas class（不再依赖外部 FontAwesome） */
+i.fas {
+  font-style: normal;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+i.fas::before {
+  display: inline-block;
+}
+
+i.fas.fa-shield-alt::before { content: "🛡"; }
+
+i.fas.fa-tools::before { content: "🛠"; }
+
+i.fas.fa-moon::before { content: "🌙"; }
+
+i.fas.fa-sun::before { content: "☀"; }
+
+i.fas.fa-download::before { content: "⬇"; }
+
+i.fas.fa-play-circle::before { content: "▶"; }
+
+i.fas.fa-chevron-down::before { content: "▾"; }
+
+i.fas.fa-chevron-up::before { content: "▴"; }
+
+i.fas.fa-info-circle::before { content: "ℹ"; }
+
+i.fas.fa-home::before { content: "⌂"; }
+
+i.fas.fa-bars::before { content: "≡"; }
+
+i.fas.fa-times::before { content: "×"; }
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .section.reveal,
+  details.log-block.reveal,
+  details.log-block .log-content {
+    filter: none !important;
+    transform: none !important;
+  }
+}
