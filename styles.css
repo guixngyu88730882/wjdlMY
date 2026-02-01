@@ -1129,14 +1129,25 @@ details.log-block:hover::after,
     padding: 0 16px;
   }
 
+  /* 小屏：导航条允许横向滚动，避免挤压变形 */
   .nav-menu {
     gap: 6px;
     padding: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-menu::-webkit-scrollbar {
+    display: none;
   }
 
   .nav-item {
     font-size: 13px;
     padding: 8px 10px;
+    white-space: nowrap;
+    flex: 0 0 auto;
   }
 
   .hero-buttons {
@@ -1151,6 +1162,50 @@ details.log-block:hover::after,
 
   .section {
     padding: 78px 18px;
+  }
+}
+
+@media (max-width: 520px) {
+  .nav-brand {
+    font-size: 18px;
+  }
+
+  /* 超小屏：只显示图标，避免导航栏换行/溢出 */
+  .nav-item {
+    font-size: 0;
+    padding: 8px 10px;
+    gap: 0;
+  }
+
+  .nav-item i {
+    font-size: 16px;
+  }
+
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 64px 16px 44px;
+  }
+
+  .section {
+    padding: 64px 16px;
+  }
+
+  .section h2 {
+    font-size: 1.9rem;
+  }
+
+  .log-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .log-date {
+    font-size: 0.88rem;
   }
 }
 
