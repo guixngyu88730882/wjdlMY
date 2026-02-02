@@ -30,6 +30,10 @@
           <i class="fas fa-home"></i>
           首页
         </a>
+        <a href="#news" class="nav-item" data-page="news">
+          <i class="fas fa-newspaper"></i>
+          新闻
+        </a>
         <a href="#police-mod" class="nav-item" data-page="police-mod">
           <i class="fas fa-shield-alt"></i>
           EF Police Mod
@@ -94,6 +98,10 @@
           <i class="fas fa-home"></i>
           首页
         </a>
+        <a href="#news" class="nav-item" data-page="news">
+          <i class="fas fa-newspaper"></i>
+          新闻
+        </a>
         <a href="#police-mod" class="nav-item" data-page="police-mod">
           <i class="fas fa-shield-alt"></i>
           EF Police Mod
@@ -126,8 +134,11 @@
       <header class="hero">
         <div class="hero-content">
           <div class="hero-kicker">EF Mods</div>
-          <h1 class="hero-headline">用高端定制与企业级 AI Agent<br>驱动下一代数字化竞争力</h1>
+          <h1 class="hero-headline">GTA5 模组官方站</h1>
           <p class="subtitle" id="hero-subtitle">稳定优先 · 模块化架构 · 更像“原生玩法”</p>
+
+
+
           <p class="version">官方发布｜免费更新｜完整说明｜反盗版声明</p>
           <p class="current-time" id="current-time" aria-label="当前时间"></p>
           <div class="hero-buttons">
@@ -308,6 +319,11 @@
             <li>
               <strong>合规提醒：</strong>请勿将本模组用于破坏性用途、联机作弊或任何违反法律法规/平台规则的行为。
             </li>
+            <li>
+              <strong>在线时间：</strong>
+              <span class="online-time" id="online-time" data-start="09:00" data-end="23:00">早上09时-晚上23时</span>
+              <span class="online-status online-status--muted" id="online-status" aria-live="polite">加载中…</span>
+            </li>
           </ul>
 
           <ul class="install-list" style="margin-top: 18px;">
@@ -379,6 +395,64 @@
       </section>
 
 
+
+    </section>
+
+    <!-- 新闻页面 -->
+    <section id="news" class="page">
+      <header class="hero">
+        <div class="hero-content">
+          <h1>新闻</h1>
+          <p class="subtitle">进展、计划与重要说明（稳定优先）</p>
+          <p class="version">我们会把关键更新写成“可追溯的记录”：你能看到我们做了什么、为什么做、以及下一步要做什么。</p>
+        </div>
+        <div class="hero-fade" aria-hidden="true"></div>
+      </header>
+
+      <section class="section" id="news-feed" aria-label="EF Mods 新闻列表">
+        <div class="news-list">
+          <article class="news-card" aria-label="我们正在加速 5.3.0 版本的开发">
+            <div class="news-card-head">
+              <h2 class="news-title">我们正在加速 5.3.0 版本的开发</h2>
+              <div class="news-meta" aria-label="发布时间">
+                <time class="news-time" datetime="2026-02-02T22:00:00" data-news-published="2026-02-02T22:00:00">2026-02-02 22:00</time>
+                <span class="news-badge" data-news-badge aria-label="新消息标记" hidden>NEW</span>
+              </div>
+            </div>
+
+            <div class="news-content">
+              <p>
+                很高兴遇到大家，我是 <strong>EF Police Mod</strong> 的开发者。
+                今天我们正式开通了“新闻”页面——从现在开始，我们会用更透明、更可追溯的方式同步开发进度，也欢迎你在社区里更深入地交流、提出反馈。
+              </p>
+
+              <p>
+                目前，我们已经完成了 <strong>5.3.0</strong> 大版本的基础内容搭建。
+                这意味着：核心结构已经稳定下来，后续的工作将更聚焦在“玩法密度、案件丰富度、指令体系与体验一致性”上。
+              </p>
+
+              <h3 class="news-h3">什么是 5.3.0？</h3>
+              <p>
+                5.3.0 的目标不是简单地“加功能”，而是把警察玩法从“机械流程”推进到更接近真实执法节奏的体验：
+                同样一次出警，不同的变量会把你带到不同的分支里——你需要判断、选择、协调、控制节奏。
+              </p>
+
+              <h3 class="news-h3">我们将实现什么</h3>
+              <ul class="news-listing">
+                <li><strong>案件多样化：</strong>同一类任务会出现更丰富的变体，让玩家不再重复执行枯燥的机械动作。</li>
+                <li><strong>指令功能体系：</strong>将指令从“能用”推进到“好用”：更清晰的反馈、更一致的规则、更可控的距离与条件。</li>
+                <li><strong>多人嫌疑人/团伙暗示：</strong>部分案件将不再是“一个人”的单点事件，而是更复杂的现场（例如多名嫌疑人、协同逃逸等）。</li>
+              </ul>
+
+              <p>
+                接下来，我们会把每次迭代都写成结构化的记录，尽量做到<strong>可验证、可追溯、可复现</strong>：
+                <strong>目标</strong>、<strong>范围</strong>、<strong>可验证变化</strong>、<strong>已知限制</strong>、以及<strong>下一步</strong>。
+                你现在看到的是主线框架；后续每一项内容会逐步补齐细节与验收标准。
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
     </section>
     
     <!-- EF Police Mod 页面 -->
@@ -1121,6 +1195,20 @@
           <div class="settings-segment" role="group" aria-label="特效模式切换">
             <button class="settings-seg" id="setting-fx-visual" type="button">视觉模式（开特效）</button>
             <button class="settings-seg" id="setting-fx-perf" type="button">性能模式（关特效）</button>
+          </div>
+        </div>
+
+        <div class="settings-group" id="devtools-group">
+          <div class="settings-label">开发者工具</div>
+          <div class="settings-row settings-devtools">
+            <span>时间模拟</span>
+            <div class="settings-devtools-ctrl">
+              <div class="settings-devtools-meta">
+                <span class="settings-devtools-value" id="setting-time-hour-label">自动</span>
+                <button class="settings-seg" id="setting-time-reset" type="button">恢复自动</button>
+              </div>
+              <input class="settings-range" id="setting-time-hour" type="range" min="0" max="23" step="1" value="12" aria-label="模拟小时（0-23）" />
+            </div>
           </div>
         </div>
       </div>

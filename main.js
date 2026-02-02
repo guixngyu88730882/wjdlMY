@@ -91,6 +91,21 @@
     const btnPerf = document.getElementById('setting-fx-perf');
     if (btnVisual) btnVisual.classList.toggle('active', fx === 'on');
     if (btnPerf) btnPerf.classList.toggle('active', fx === 'off');
+
+    // 开发者工具：时间模拟
+    const range = document.getElementById('setting-time-hour');
+    const label = document.getElementById('setting-time-hour-label');
+    if (range && label) {
+      const forced = root.getAttribute('data-time-override');
+      if (forced !== null && forced !== '') {
+        range.value = String(forced);
+        label.textContent = `模拟：${String(forced).padStart(2, '0')}:00`;
+      } else {
+        const nowH = new Date().getHours();
+        range.value = String(nowH);
+        label.textContent = '自动';
+      }
+    }
   }
 
   function setupReveal(scopeEl) {
@@ -421,6 +436,186 @@
     render();
     window.setInterval(render, 1000);
   }
+
+  function setupOnlineTimeStatus() {
+    const badge = document.getElementById('online-status');
+    if (!badge) return;
+
+    const KEY_OVERRIDE = 'efmods-time-override-hour';
+
+    const timeEl = document.getElementById('online-time') || document.querySelector('.online-time');
+    const startRaw = (timeEl && timeEl.getAttribute('data-start')) || '09:00';
+    const endRaw = (timeEl && timeEl.getAttribute('data-end')) || '23:00';
+
+    const NEAR_MINUTES = 30;
+
+    function parseHm(s) {
+      const m = String(s || '').match(/^(\d{1,2}):(\d{2})$/);
+      if (!m) return null;
+      const hh = parseInt(m[1], 10);
+      const mm = parseInt(m[2], 10);
+      if (Number.isNaN(hh) || Number.isNaN(mm)) return null;
+      if (hh < 0 || hh > 23 || mm < 0 || mm > 59) return null;
+      return hh * 60 + mm;
+    }
+
+    function getOverrideHour() {
+      const raw = localStorage.getItem(KEY_OVERRIDE);
+      if (raw === null || raw === '') return null;
+      const n = parseInt(raw, 10);
+      if (Number.isNaN(n)) return null;
+      if (n < 0 || n > 23) return null;
+      return n;
+    }
+
+    const startMin = parseHm(startRaw) ?? (9 * 60);
+    const endMin = parseHm(endRaw) ?? (23 * 60);
+
+    let lastKey = '';
+
+    function setBadge(text, cls) {
+      const nextKey = `${text}|${cls}`;
+      if (nextKey === lastKey) return;
+      lastKey = nextKey;
+
+      badge.classList.add('online-status-switch-out');
+      window.setTimeout(() => {
+        badge.textContent = text;
+        badge.classList.remove('online-status--muted', 'online-status--on', 'online-status--off', 'online-status--near');
+        badge.classList.add(cls);
+
+        badge.classList.remove('online-status-switch-out');
+        badge.classList.add('online-status-switch-in');
+        window.setTimeout(() => badge.classList.remove('online-status-switch-in'), 380);
+      }, 210);
+    }
+
+    function computeState(nowMin) {
+      // 仅处理“同一天 09:00-23:00”这类时段（不跨天）
+      const isOn = nowMin >= startMin && nowMin < endMin;
+
+      if (isOn) {
+        if ((endMin - nowMin) <= NEAR_MINUTES) return { text: '快下班了', cls: 'online-status--near' };
+        return { text: '上班了', cls: 'online-status--on' };
+      }
+
+      if (nowMin < startMin) {
+        if ((startMin - nowMin) <= NEAR_MINUTES) return { text: '快上班了', cls: 'online-status--near' };
+        return { text: '下班了', cls: 'online-status--off' };
+      }
+
+      return { text: '下班了', cls: 'online-status--off' };
+    }
+
+    function tick() {
+      const d = new Date();
+      const nowMin = d.getHours() * 60 + d.getMinutes();
+      const s = computeState(nowMin);
+      setBadge(s.text, s.cls);
+    }
+
+    tick();
+    window.setInterval(tick, 6 * 1000);
+  }
+
+  function setupNewsTimeLabels() {
+    const timeEls = Array.from(document.querySelectorAll('[data-news-published]'));
+    if (!timeEls.length) return;
+
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function formatAbsolute(d) {
+      const yyyy = d.getFullYear();
+      const mm = pad2(d.getMonth() + 1);
+      const dd = pad2(d.getDate());
+      const hh = pad2(d.getHours());
+      const mi = pad2(d.getMinutes());
+      return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+    }
+
+    function renderOne(timeEl) {
+      const raw = timeEl.getAttribute('data-news-published') || timeEl.getAttribute('datetime') || '';
+
+      // 用本地时间解析（用户要求“2026/02/02 晚上10:00发布”，这里按访问者当地时区展示）
+      let published = null;
+      if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(raw)) {
+        const parts = raw.split('T');
+        const ymd = parts[0].split('-').map(n => parseInt(n, 10));
+        const hm = parts[1].split(':').map(n => parseInt(n, 10));
+        if (ymd.length >= 3 && hm.length >= 2) {
+          published = new Date(ymd[0], ymd[1] - 1, ymd[2], hm[0], hm[1], 0, 0);
+        }
+      }
+
+      if (!published || Number.isNaN(published.getTime())) return;
+
+      const now = new Date();
+      const diffMs = now.getTime() - published.getTime();
+
+      const card = timeEl.closest('.news-card');
+      const badge = card ? card.querySelector('[data-news-badge]') : null;
+
+      // 默认显示绝对时间（避免“刚好跨时区/跨天”造成误解）
+      timeEl.textContent = formatAbsolute(published);
+
+      if (badge) {
+        badge.hidden = true;
+      }
+
+      // 未来：显示倒计时提示（但仍保留绝对时间）
+      if (diffMs < 0) {
+        const sec = Math.ceil(Math.abs(diffMs) / 1000);
+        if (sec <= 60) {
+          timeEl.textContent = `将于 ${formatAbsolute(published)} 发布（即将）`;
+          return;
+        }
+
+        const min = Math.ceil(sec / 60);
+        if (min < 60) {
+          timeEl.textContent = `将于 ${formatAbsolute(published)} 发布（${min} 分钟后）`;
+          return;
+        }
+
+        const hour = Math.ceil(min / 60);
+        timeEl.textContent = `将于 ${formatAbsolute(published)} 发布（约 ${hour} 小时后）`;
+        return;
+      }
+
+      // 过去：NEW / 相对时间
+      if (diffMs < 60 * 1000) {
+        if (badge) {
+          badge.hidden = false;
+          badge.textContent = 'NEW';
+        }
+        timeEl.textContent = `${formatAbsolute(published)}（刚刚）`;
+        return;
+      }
+
+      if (diffMs < 60 * 60 * 1000) {
+        const m = Math.max(1, Math.floor(diffMs / (60 * 1000)));
+        timeEl.textContent = `${formatAbsolute(published)}（${m} 分钟前）`;
+        return;
+      }
+
+      if (diffMs < 24 * 60 * 60 * 1000) {
+        const h = Math.max(1, Math.floor(diffMs / (60 * 60 * 1000)));
+        timeEl.textContent = `${formatAbsolute(published)}（${h} 小时前）`;
+        return;
+      }
+
+      const d = Math.max(1, Math.floor(diffMs / (24 * 60 * 60 * 1000)));
+      timeEl.textContent = `${formatAbsolute(published)}（${d} 天前）`;
+    }
+
+    function renderAll() {
+      timeEls.forEach(renderOne);
+    }
+
+    renderAll();
+    window.setInterval(renderAll, 30 * 1000);
+  }
   function setupGlobalSpotlight() {
     let rafId = 0;
     let lastX = 0;
@@ -485,6 +680,126 @@
       applyCollapsed(false);
     });
   }
+
+  function setupTimeMood() {
+    const root = document.documentElement;
+
+    const KEY_OVERRIDE = 'efmods-time-override-hour';
+
+    function fxEnabled() {
+      return root.getAttribute('data-fx') !== 'off';
+    }
+
+    function getOverrideHour() {
+      const raw = localStorage.getItem(KEY_OVERRIDE);
+      if (raw === null || raw === '') return null;
+      const n = parseInt(raw, 10);
+      if (Number.isNaN(n)) return null;
+      if (n < 0 || n > 23) return null;
+      return n;
+    }
+
+    function getEffectiveHour() {
+      const forced = getOverrideHour();
+      if (typeof forced === 'number') return forced;
+      return new Date().getHours();
+    }
+
+    function ensureLayers() {
+      if (document.getElementById('time-mood-layer-a')) return;
+
+      const a = document.createElement('div');
+      a.id = 'time-mood-layer-a';
+      a.className = 'time-mood-layer';
+      a.setAttribute('data-mood', 'day');
+      a.style.opacity = '1';
+
+      const b = document.createElement('div');
+      b.id = 'time-mood-layer-b';
+      b.className = 'time-mood-layer';
+      b.setAttribute('data-mood', 'day');
+      b.style.opacity = '0';
+
+      document.body.appendChild(a);
+      document.body.appendChild(b);
+
+      const toast = document.createElement('div');
+      toast.id = 'late-night-reminder';
+      toast.className = 'late-night-reminder';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      toast.textContent = '谢谢你这么晚还来看我，早点睡吧~';
+      document.body.appendChild(toast);
+    }
+
+    function getMoodByHour(h) {
+      if (h >= 22 || h <= 4) return 'late';
+      if (h >= 5 && h <= 8) return 'sunrise';
+      if (h >= 9 && h <= 16) return 'day';
+      if (h >= 17 && h <= 19) return 'sunset';
+      if (h >= 20 && h <= 21) return 'night';
+      return 'day';
+    }
+
+    function setToastVisible(visible) {
+      const toast = document.getElementById('late-night-reminder');
+      if (!toast) return;
+      toast.classList.toggle('show', !!visible);
+    }
+
+    function crossFadeTo(mood) {
+      const a = document.getElementById('time-mood-layer-a');
+      const b = document.getElementById('time-mood-layer-b');
+      if (!a || !b) return;
+
+      const activeKey = root.getAttribute('data-time-mood-active-layer') || 'a';
+      const active = activeKey === 'b' ? b : a;
+      const inactive = activeKey === 'b' ? a : b;
+
+      if (active.getAttribute('data-mood') === mood) return;
+
+      inactive.setAttribute('data-mood', mood);
+      inactive.style.opacity = '1';
+      active.style.opacity = '0';
+
+      root.setAttribute('data-time-mood-active-layer', activeKey === 'b' ? 'a' : 'b');
+    }
+
+    function apply() {
+      const h = getEffectiveHour();
+      const mood = getMoodByHour(h);
+
+      const forced = getOverrideHour();
+      if (typeof forced === 'number') {
+        root.setAttribute('data-time-override', String(forced));
+      } else {
+        root.removeAttribute('data-time-override');
+      }
+
+      root.setAttribute('data-time-mood', mood);
+
+      if (!fxEnabled()) {
+        const a = document.getElementById('time-mood-layer-a');
+        const b = document.getElementById('time-mood-layer-b');
+        if (a) a.style.opacity = '0';
+        if (b) b.style.opacity = '0';
+        setToastVisible(false);
+        return;
+      }
+
+      ensureLayers();
+      crossFadeTo(mood);
+      setToastVisible(mood === 'late');
+    }
+
+    // 暴露给“开发者工具”调用（调整滑杆后立即生效）
+    window.__efmodsApplyTimeMood = apply;
+
+    ensureLayers();
+    apply();
+    window.setInterval(apply, 60 * 1000);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     const savedTheme = localStorage.getItem('efmods-theme') || 'light';
     setTheme(savedTheme);
@@ -505,9 +820,13 @@
       setPerfMode(savedPerf);
     }
 
+    setupTimeMood();
+
     setupCopyButtons();
     setupHeroSubtitleRotator();
     setupHomeClock();
+    setupOnlineTimeStatus();
+    setupNewsTimeLabels();
     setupReadingProgress();
     setupMaterialRipple();
     setupAnnouncementBar();
@@ -576,6 +895,28 @@
 
     const btnPerf = document.getElementById('setting-fx-perf');
     if (btnPerf) btnPerf.addEventListener('click', () => setPerfMode('low'));
+
+    // 开发者工具：时间模拟（仅影响本页面氛围显示，不会改变系统时间）
+    const timeRange = document.getElementById('setting-time-hour');
+    const timeReset = document.getElementById('setting-time-reset');
+    if (timeRange) {
+      timeRange.addEventListener('input', function () {
+        const v = parseInt(String(this.value), 10);
+        if (!Number.isNaN(v)) {
+          localStorage.setItem('efmods-time-override-hour', String(v));
+        }
+        if (typeof window.__efmodsApplyTimeMood === 'function') window.__efmodsApplyTimeMood();
+        syncSettingsUI();
+      });
+    }
+
+    if (timeReset) {
+      timeReset.addEventListener('click', function () {
+        localStorage.removeItem('efmods-time-override-hour');
+        if (typeof window.__efmodsApplyTimeMood === 'function') window.__efmodsApplyTimeMood();
+        syncSettingsUI();
+      });
+    }
 
     syncSettingsUI();
 

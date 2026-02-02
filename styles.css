@@ -178,6 +178,190 @@ body::after {
   opacity: 0.70;
 }
 
+/* 时间氛围层：纯颜色渐变（无“实物”），由 main.js 根据本地时间段切换 */
+.time-mood-layer {
+  position: fixed;
+  inset: -22vh -22vw;
+  pointer-events: none;
+  z-index: 0;
+
+  opacity: 0;
+  transition: opacity 1.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity;
+  transform: translateZ(0);
+
+  filter: blur(0.2px) saturate(118%);
+
+  /* 极轻的漂移：让氛围更“活”，同时避免明显晃动 */
+  animation: timeMoodDrift 96s ease-in-out infinite;
+}
+
+/* 深夜 22:00-04:00：星空点点（用多层小径向渐变模拟星点） */
+.time-mood-layer[data-mood="late"] {
+  background:
+    radial-gradient(900px 520px at 20% 14%, rgba(120, 170, 255, 0.10), transparent 62%),
+    radial-gradient(820px 520px at 88% 20%, rgba(90, 200, 250, 0.08), transparent 64%),
+    radial-gradient(1200px 760px at 50% 92%, rgba(60, 120, 255, 0.06), transparent 66%),
+
+    radial-gradient(2px 2px at 12% 18%, rgba(255,255,255,0.55) 0 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 26% 36%, rgba(255,255,255,0.48) 0 60%, transparent 62%),
+    radial-gradient(1.8px 1.8px at 44% 22%, rgba(255,255,255,0.40) 0 60%, transparent 62%),
+    radial-gradient(1.4px 1.4px at 58% 40%, rgba(255,255,255,0.45) 0 60%, transparent 62%),
+    radial-gradient(2px 2px at 72% 28%, rgba(255,255,255,0.52) 0 60%, transparent 62%),
+    radial-gradient(1.5px 1.5px at 86% 46%, rgba(255,255,255,0.38) 0 60%, transparent 62%),
+    radial-gradient(1.8px 1.8px at 18% 62%, rgba(255,255,255,0.40) 0 60%, transparent 62%),
+    radial-gradient(1.5px 1.5px at 38% 78%, rgba(255,255,255,0.34) 0 60%, transparent 62%),
+    radial-gradient(2px 2px at 64% 70%, rgba(255,255,255,0.44) 0 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 82% 86%, rgba(255,255,255,0.32) 0 60%, transparent 62%),
+
+    radial-gradient(1400px 900px at 50% 50%, rgba(6, 10, 24, 0.88), rgba(6, 8, 18, 0.96));
+}
+
+/* 早晨 05:00-08:00：日出红橙泛光（边缘更明显） */
+.time-mood-layer[data-mood="sunrise"] {
+  background:
+    radial-gradient(900px 620px at 50% 108%, rgba(255, 120, 60, 0.22), transparent 62%),
+    radial-gradient(720px 520px at 8% 62%, rgba(255, 90, 30, 0.16), transparent 64%),
+    radial-gradient(720px 520px at 92% 58%, rgba(255, 120, 60, 0.16), transparent 64%),
+    radial-gradient(1400px 900px at 50% 10%, rgba(120, 170, 255, 0.12), transparent 60%),
+    linear-gradient(180deg, rgba(250, 252, 255, 0.40), rgba(250, 252, 255, 0.00) 62%);
+}
+
+/* 白天 09:00-16:00：增强日光（更明亮、更“晒”一点） */
+.time-mood-layer[data-mood="day"] {
+  background:
+    radial-gradient(1100px 720px at 50% -8%, rgba(255, 240, 150, 0.16), transparent 62%),
+    radial-gradient(900px 620px at 84% 12%, rgba(255, 220, 120, 0.10), transparent 64%),
+    radial-gradient(900px 620px at 16% 18%, rgba(0, 122, 255, 0.08), transparent 64%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.00) 60%);
+}
+
+/* 傍晚 17:00-19:00：紫霞云 + 火烧云边缘 */
+.time-mood-layer[data-mood="sunset"] {
+  background:
+    radial-gradient(980px 640px at 50% 110%, rgba(255, 120, 60, 0.20), transparent 62%),
+    radial-gradient(900px 620px at 12% 72%, rgba(255, 90, 30, 0.14), transparent 64%),
+    radial-gradient(900px 620px at 88% 70%, rgba(255, 140, 70, 0.14), transparent 64%),
+    radial-gradient(1200px 820px at 50% 8%, rgba(175, 120, 255, 0.18), transparent 62%),
+    radial-gradient(900px 700px at 50% 28%, rgba(120, 70, 210, 0.12), transparent 66%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.00) 58%);
+}
+
+/* 夜间 20:00-21:00：月亮黄的柔光（不画月亮实体，只做偏暖光晕） */
+.time-mood-layer[data-mood="night"] {
+  background:
+    radial-gradient(820px 640px at 78% 16%, rgba(255, 232, 160, 0.18), transparent 62%),
+    radial-gradient(980px 760px at 20% 18%, rgba(90, 200, 250, 0.08), transparent 66%),
+    radial-gradient(1200px 900px at 50% 90%, rgba(0, 122, 255, 0.06), transparent 66%),
+    linear-gradient(180deg, rgba(20, 22, 34, 0.22), rgba(20, 22, 34, 0.00) 60%);
+}
+
+/* 浅色主题：避免“深夜”把整体压黑，改为更轻的叠色（保留氛围但不抢可读性） */
+html:not([data-theme="dark"]) .time-mood-layer {
+  mix-blend-mode: multiply;
+  filter: blur(0.18px) saturate(112%);
+}
+
+html:not([data-theme="dark"]) .time-mood-layer[data-mood="late"] {
+  background:
+    radial-gradient(900px 520px at 20% 14%, rgba(80, 130, 255, 0.10), transparent 64%),
+    radial-gradient(820px 520px at 88% 20%, rgba(90, 200, 250, 0.08), transparent 66%),
+    radial-gradient(1200px 760px at 50% 92%, rgba(60, 120, 255, 0.06), transparent 68%),
+
+    radial-gradient(2px 2px at 12% 18%, rgba(20, 30, 60, 0.18) 0 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 26% 36%, rgba(20, 30, 60, 0.16) 0 60%, transparent 62%),
+    radial-gradient(1.8px 1.8px at 44% 22%, rgba(20, 30, 60, 0.14) 0 60%, transparent 62%),
+    radial-gradient(1.4px 1.4px at 58% 40%, rgba(20, 30, 60, 0.15) 0 60%, transparent 62%),
+    radial-gradient(2px 2px at 72% 28%, rgba(20, 30, 60, 0.16) 0 60%, transparent 62%),
+    radial-gradient(1.5px 1.5px at 86% 46%, rgba(20, 30, 60, 0.13) 0 60%, transparent 62%),
+    radial-gradient(1.8px 1.8px at 18% 62%, rgba(20, 30, 60, 0.14) 0 60%, transparent 62%),
+    radial-gradient(1.5px 1.5px at 38% 78%, rgba(20, 30, 60, 0.12) 0 60%, transparent 62%),
+    radial-gradient(2px 2px at 64% 70%, rgba(20, 30, 60, 0.14) 0 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 82% 86%, rgba(20, 30, 60, 0.11) 0 60%, transparent 62%),
+
+    radial-gradient(1400px 900px at 50% 50%, rgba(246, 247, 251, 0.80), rgba(246, 247, 251, 0.92));
+}
+
+html:not([data-theme="dark"]) .time-mood-layer[data-mood="sunrise"] {
+  background:
+    radial-gradient(980px 680px at 50% 110%, rgba(255, 120, 60, 0.18), transparent 64%),
+    radial-gradient(820px 620px at 8% 68%, rgba(255, 90, 30, 0.12), transparent 66%),
+    radial-gradient(820px 620px at 92% 62%, rgba(255, 140, 70, 0.12), transparent 66%),
+    radial-gradient(1400px 900px at 50% 10%, rgba(90, 160, 255, 0.10), transparent 62%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.00) 62%);
+}
+
+html:not([data-theme="dark"]) .time-mood-layer[data-mood="day"] {
+  background:
+    radial-gradient(1200px 760px at 50% -10%, rgba(255, 236, 150, 0.12), transparent 64%),
+    radial-gradient(900px 640px at 84% 14%, rgba(255, 220, 120, 0.08), transparent 66%),
+    radial-gradient(900px 640px at 16% 18%, rgba(0, 122, 255, 0.06), transparent 66%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.00) 60%);
+}
+
+html:not([data-theme="dark"]) .time-mood-layer[data-mood="sunset"] {
+  background:
+    radial-gradient(980px 680px at 50% 112%, rgba(255, 120, 60, 0.16), transparent 64%),
+    radial-gradient(900px 640px at 12% 74%, rgba(255, 90, 30, 0.10), transparent 66%),
+    radial-gradient(900px 640px at 88% 72%, rgba(255, 140, 70, 0.10), transparent 66%),
+    radial-gradient(1200px 860px at 50% 10%, rgba(175, 120, 255, 0.14), transparent 64%),
+    radial-gradient(980px 740px at 50% 30%, rgba(120, 70, 210, 0.08), transparent 68%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.00) 58%);
+}
+
+html:not([data-theme="dark"]) .time-mood-layer[data-mood="night"] {
+  background:
+    radial-gradient(900px 720px at 78% 16%, rgba(255, 232, 160, 0.14), transparent 64%),
+    radial-gradient(980px 780px at 20% 18%, rgba(90, 200, 250, 0.07), transparent 68%),
+    radial-gradient(1200px 920px at 50% 92%, rgba(0, 122, 255, 0.05), transparent 70%),
+    linear-gradient(180deg, rgba(246, 247, 251, 0.12), rgba(246, 247, 251, 0.00) 62%);
+}
+
+/* 深夜提示（22:00-04:00） */
+.late-night-reminder {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%) translateY(14px);
+  z-index: 1600;
+
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 760;
+  letter-spacing: -0.2px;
+
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.16);
+
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.45s ease,
+    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+[data-theme="dark"] .late-night-reminder {
+  background: rgba(28, 28, 30, 0.52);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow: 0 28px 100px rgba(0, 0, 0, 0.46);
+}
+
+.late-night-reminder.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 性能模式：直接禁用时间氛围层（避免额外绘制） */
+html[data-fx="off"] .time-mood-layer,
+html[data-fx="off"] .late-night-reminder {
+  display: none !important;
+}
+
 .main-content,
 .navbar,
 .footer {
@@ -227,6 +411,8 @@ i.fas.fa-bars::before { content: "≡"; }
 i.fas.fa-times::before { content: "×"; }
 
 i.fas.fa-cog::before { content: "⚙"; }
+
+i.fas.fa-newspaper::before { content: "📰"; }
 
 /* 设置按钮 */
 .settings-toggle {
@@ -434,6 +620,38 @@ body.settings-open .settings-panel {
   font-size: 12px;
   line-height: 1.55;
   color: var(--text-light);
+}
+
+/* 设置：开发者工具（时间模拟） */
+.settings-row.settings-devtools {
+  align-items: flex-start;
+}
+
+.settings-devtools-ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 240px;
+}
+
+.settings-devtools-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.settings-devtools-value {
+  font-size: 12px;
+  font-weight: 820;
+  color: var(--text-light);
+  letter-spacing: -0.2px;
+}
+
+.settings-range {
+  width: 260px;
+  max-width: 60vw;
+  accent-color: var(--blue);
 }
 
 @media (max-width: 520px) {
@@ -1193,7 +1411,7 @@ html[data-perf="low"] .perf-toggle {
 
 /* 首页 Hero：大标题丁达尔/背光（不影响其它页面的 .hero h1） */
 .hero-kicker {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 
@@ -1566,6 +1784,74 @@ html[data-perf="low"] .perf-toggle {
 
 .subtitle-cta:hover {
   animation-play-state: paused;
+}
+
+/* Hero："迫不及待了？/看看新闻吧" 循环提示（带按钮） */
+.hero-news-loop {
+  margin: 0 auto 16px;
+  width: fit-content;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  padding: 10px 12px;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.38);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+
+  box-shadow:
+    0 0 0 1px rgba(0, 122, 255, 0.08),
+    0 18px 70px rgba(0, 122, 255, 0.12);
+}
+
+[data-theme="dark"] .hero-news-loop {
+  background: rgba(28, 28, 30, 0.34);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 0 0 1px rgba(10, 132, 255, 0.14),
+    0 22px 90px rgba(10, 132, 255, 0.16);
+}
+
+.hero-news-loop-viewport {
+  height: 20px;
+  overflow: hidden;
+}
+
+.hero-news-loop-track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  animation: heroNewsLoop 4.6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+.hero-news-loop-line {
+  height: 20px;
+  display: flex;
+  align-items: center;
+
+  font-size: 13px;
+  font-weight: 760;
+  letter-spacing: -0.2px;
+  color: var(--text-main);
+  padding: 0 6px;
+  white-space: nowrap;
+}
+
+.hero-news-loop-btn {
+  animation: none;
+}
+
+@keyframes heroNewsLoop {
+  0% { transform: translateY(0); }
+  42% { transform: translateY(0); }
+  58% { transform: translateY(-20px); }
+  92% { transform: translateY(-20px); }
+  100% { transform: translateY(-40px); }
 }
 
 .version {
@@ -2349,6 +2635,194 @@ details.log-block.reveal.in-view {
   margin-top: 16px;
 }
 
+/* 新闻页（参考 OpenAI News：干净、克制、可读） */
+.news-list {
+  display: grid;
+  gap: 18px;
+}
+
+.news-card {
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.news-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.news-title {
+  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  font-weight: 860;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  color: var(--text-main);
+}
+
+.news-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 12px;
+  font-weight: 780;
+  letter-spacing: -0.2px;
+  color: var(--text-light);
+}
+
+.news-time {
+  color: var(--text-light);
+}
+
+.news-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+
+  color: rgba(255, 255, 255, 0.96);
+  background: linear-gradient(90deg, var(--blue), var(--blue-light));
+  box-shadow: 0 14px 46px rgba(0, 122, 255, 0.22);
+}
+
+.news-content {
+  margin-top: 14px;
+}
+
+.news-content p {
+  max-width: var(--measure-wide);
+}
+
+.news-h3 {
+  margin-top: 18px;
+  font-size: 1.06rem;
+  font-weight: 820;
+  letter-spacing: -0.25px;
+  color: var(--text-main);
+}
+
+.news-listing {
+  margin-top: 10px;
+  padding-left: 18px;
+  max-width: var(--measure-wide);
+}
+
+.news-listing li {
+  margin: 10px 0;
+  color: var(--text-sub);
+}
+
+.news-footnote {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.news-hint {
+  margin-top: 0;
+  color: var(--text-light);
+  font-size: 12px;
+}
+
+/* 新闻页（参考 OpenAI News：干净、克制、可读） */
+.news-list {
+  display: grid;
+  gap: 18px;
+}
+
+.news-card {
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.news-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.news-title {
+  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  font-weight: 860;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  color: var(--text-main);
+}
+
+.news-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 12px;
+  font-weight: 780;
+  letter-spacing: -0.2px;
+  color: var(--text-light);
+}
+
+.news-time {
+  color: var(--text-light);
+}
+
+.news-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+
+  color: rgba(255, 255, 255, 0.96);
+  background: linear-gradient(90deg, var(--blue), var(--blue-light));
+  box-shadow: 0 14px 46px rgba(0, 122, 255, 0.22);
+}
+
+.news-content {
+  margin-top: 14px;
+}
+
+.news-content p {
+  max-width: var(--measure-wide);
+}
+
+.news-h3 {
+  margin-top: 18px;
+  font-size: 1.06rem;
+  font-weight: 820;
+  letter-spacing: -0.25px;
+  color: var(--text-main);
+}
+
+.news-listing {
+  margin-top: 10px;
+  padding-left: 18px;
+  max-width: var(--measure-wide);
+}
+
+.news-listing li {
+  margin: 10px 0;
+  color: var(--text-sub);
+}
+
+.news-footnote {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.news-hint {
+  margin-top: 0;
+  color: var(--text-light);
+  font-size: 12px;
+}
+
 /* 标签/Chip（用于首页产品卡片的操作按钮，轻量更“高级”） */
 .chip {
   display: inline-flex;
@@ -2462,6 +2936,78 @@ details.log-block.reveal.in-view {
   border-radius: 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.92em;
+}
+
+/* 在线时间：上班/下班状态 */
+.online-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: -0.2px;
+  line-height: 1;
+
+  background: rgba(255, 255, 255, 0.32);
+  border: 1px solid var(--border-light);
+
+  transition:
+    opacity 0.32s ease,
+    transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 0.42s cubic-bezier(0.22, 0.61, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+  will-change: opacity, transform, filter;
+}
+
+[data-theme="dark"] .online-status {
+  background: rgba(28, 28, 30, 0.30);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+
+.online-status--on {
+  color: var(--green);
+  border-color: rgba(52, 199, 89, 0.28);
+  background: rgba(52, 199, 89, 0.10);
+}
+
+.online-status--off {
+  color: var(--red);
+  border-color: rgba(255, 59, 48, 0.28);
+  background: rgba(255, 59, 48, 0.10);
+}
+
+.online-status--near {
+  color: rgba(190, 132, 0, 0.96);
+  border-color: rgba(255, 204, 0, 0.30);
+  background: rgba(255, 204, 0, 0.12);
+}
+
+[data-theme="dark"] .online-status--near {
+  color: rgba(255, 214, 90, 0.96);
+  border-color: rgba(255, 214, 90, 0.28);
+  background: rgba(255, 214, 90, 0.12);
+}
+
+.online-status--muted {
+  color: var(--text-light);
+}
+
+.online-status-switch-out {
+  opacity: 0;
+  transform: translateY(-4px);
+  filter: blur(6px);
+}
+
+.online-status-switch-in {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
 }
 
 .warning {
@@ -2819,6 +3365,21 @@ details.log-block.reveal.in-view {
   }
 }
 
+@keyframes timeMoodDrift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  40% {
+    transform: translate3d(-0.8%, -0.6%, 0) scale(1.01);
+  }
+  72% {
+    transform: translate3d(0.6%, -0.4%, 0) scale(1.012);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @media (max-width: 768px) {
   :root {
     --nav-height: 60px;
@@ -3163,13 +3724,20 @@ details.log-block[open] .log-content {
     opacity: 0.42;
   }
 
-  /* Hero 背景更克制：减少漂移与雾化 */
+  /* Hero 背景更克制：减少漂移与雾化，同时消除“光效断层” */
   .hero::before {
-    opacity: 0.44;
+    opacity: 0.42;
+
+    /* 移动端略放大底图，减少边缘硬切换导致的“断层” */
+    background-size: auto, 140%;
+    background-position: 0 0, center;
   }
 
   .hero::after {
-    opacity: 0.50;
-    animation: none;
+    opacity: 0.52;
+    filter: blur(46px) saturate(116%);
+
+    /* 移动端保留极慢漂移（更有生命力），但比桌面更省电 */
+    animation: heroGlowDrift 96s ease-in-out infinite;
   }
 }
