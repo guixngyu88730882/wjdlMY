@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a84ff" />
+  <title>感谢支持 | EF Mods</title>
+  <meta name="robots" content="noindex" />
+</head>
+<body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b0b0c;color:rgba(245,245,247,0.96);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <main style="max-width:720px;padding:28px 18px;text-align:center;">
+    <h1 style="margin:0 0 10px;font-size:28px;letter-spacing:-0.6px;">我叫 某宇</h1>
+    <p style="margin:0 0 14px;font-size:16px;line-height:1.75;color:rgba(245,245,247,0.74);">
+      感谢你们每一个宝贵的下载~
+    </p>
+    <p style="margin:0 0 18px;font-size:14px;line-height:1.75;color:rgba(245,245,247,0.58);">
+      <span id="countdown">3</span> 秒后将自动前往活动页。
+    </p>
+
+    <p style="margin:0;">
+      <a id="go" href="https://www.wanjiadongli.com/mods/competition?clientUserId=1753255&tab=1" target="_blank" rel="noopener noreferrer"
+        style="display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700;letter-spacing:-0.2px;color:#fff;background:linear-gradient(180deg, rgba(10,132,255,0.98), rgba(10,132,255,0.78));box-shadow:0 14px 44px rgba(10,132,255,0.26);">
+        立即前往活动页
+      </a>
+    </p>
+
+    <p style="margin:14px 0 0;font-size:12px;line-height:1.6;color:rgba(245,245,247,0.46);">
+      若未自动跳转，请点击上方按钮。
+    </p>
+  </main>
+
+  <script>
+    (function () {
+      var target = 'https://www.wanjiadongli.com/mods/competition?clientUserId=1753255&tab=1';
+      var seconds = 3;
+      var el = document.getElementById('countdown');
+
+      function getQueryParam(name) {
+        try {
+          var u = new URL(window.location.href);
+          return (u.searchParams.get(name) || '').trim();
+        } catch (e) {
+          return '';
+        }
+      }
+
+      function sendTrackOnce() {
+        // 仅用于简单计数：不采集个人信息
+        var payload = {
+          event: 'activity_click',
+          src: getQueryParam('src') || 'unknown',
+          path: window.location.pathname
+        };
+
+        try {
+          if (navigator && typeof navigator.sendBeacon === 'function') {
+            var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+            navigator.sendBeacon('/api/track', blob);
+            return;
+          }
+        } catch (e) {
+          // ignore
+        }
+
+        try {
+          fetch('/api/track', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true,
+          }).catch(function () { });
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      // 页面打开即记录一次（从公告栏点进来会带 src=announcement）
+      sendTrackOnce();
+
+      function tick() {
+        if (el) el.textContent = String(seconds);
+        if (seconds <= 0) {
+          // 同页跳转（避免被浏览器拦截弹窗）；若用户想新标签，可自己点按钮
+          window.location.href = target;
+          return;
+        }
+        seconds -= 1;
+        window.setTimeout(tick, 1000);
+      }
+
+      tick();
+    })();
+  </script>
+</body>
+</html>

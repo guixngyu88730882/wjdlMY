@@ -17,6 +17,81 @@
       themeToggle.setAttribute('title', '切换到深色主题');
     }
   }
+  function setFxMode(mode) {
+    const root = document.documentElement;
+    const m = mode === 'off' ? 'off' : 'on';
+
+    if (m === 'off') root.setAttribute('data-fx', 'off');
+    else root.removeAttribute('data-fx');
+
+    localStorage.setItem('efmods-fx', m);
+    syncSettingsUI();
+  }
+
+  function setShowTime(enabled) {
+    const root = document.documentElement;
+    const on = !!enabled;
+    root.setAttribute('data-show-time', on ? '1' : '0');
+    localStorage.setItem('efmods-show-time', on ? '1' : '0');
+    syncSettingsUI();
+  }
+
+  function setSpotlight(enabled) {
+    const root = document.documentElement;
+    const on = !!enabled;
+    root.setAttribute('data-spotlight', on ? '1' : '0');
+    localStorage.setItem('efmods-spotlight', on ? '1' : '0');
+    syncSettingsUI();
+  }
+
+  function setPerfMode(mode) {
+    const root = document.documentElement;
+    const m = mode === 'low' ? 'low' : 'high';
+
+    if (m === 'low') {
+      root.setAttribute('data-perf', 'low');
+      // 低性能 = 尽量关特效（与“性能模式”一致）
+      setFxMode('off');
+    } else {
+      root.removeAttribute('data-perf');
+      setFxMode('on');
+    }
+
+    localStorage.setItem('efmods-perf', m);
+
+    const btn = document.getElementById('perf-toggle');
+    if (!btn) return;
+
+    const isLow = m === 'low';
+    btn.setAttribute('aria-pressed', isLow ? 'true' : 'false');
+    btn.textContent = isLow ? '性能：开' : '性能';
+    btn.setAttribute('title', isLow ? '关闭性能模式（恢复特效）' : '开启性能模式（关闭特效）');
+  }
+
+  function syncSettingsUI() {
+    const root = document.documentElement;
+
+    const showTime = root.getAttribute('data-show-time') !== '0';
+    const spotlight = root.getAttribute('data-spotlight') !== '0';
+    const theme = root.getAttribute('data-theme') || 'light';
+    const fx = root.getAttribute('data-fx') === 'off' ? 'off' : 'on';
+
+    const cbTime = document.getElementById('setting-show-time');
+    if (cbTime) cbTime.checked = !!showTime;
+
+    const cbSpot = document.getElementById('setting-spotlight');
+    if (cbSpot) cbSpot.checked = !!spotlight;
+
+    const btnLight = document.getElementById('setting-theme-light');
+    const btnDark = document.getElementById('setting-theme-dark');
+    if (btnLight) btnLight.classList.toggle('active', theme !== 'dark');
+    if (btnDark) btnDark.classList.toggle('active', theme === 'dark');
+
+    const btnVisual = document.getElementById('setting-fx-visual');
+    const btnPerf = document.getElementById('setting-fx-perf');
+    if (btnVisual) btnVisual.classList.toggle('active', fx === 'on');
+    if (btnPerf) btnPerf.classList.toggle('active', fx === 'off');
+  }
 
   function setupReveal(scopeEl) {
     if (!scopeEl) return;
@@ -324,13 +399,200 @@
     requestUpdate();
   }
 
+  function setupHomeClock() {
+    const el = document.getElementById('current-time');
+    if (!el) return;
+
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function render() {
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = pad2(d.getMonth() + 1);
+      const dd = pad2(d.getDate());
+      const hh = pad2(d.getHours());
+      const mi = pad2(d.getMinutes());
+      const ss = pad2(d.getSeconds());
+      el.textContent = `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+    }
+
+    render();
+    window.setInterval(render, 1000);
+  }
+  function setupGlobalSpotlight() {
+    let rafId = 0;
+    let lastX = 0;
+    let lastY = 0;
+
+    function enabled() {
+      const root = document.documentElement;
+      if (root.getAttribute('data-fx') === 'off') return false;
+      if (root.getAttribute('data-spotlight') === '0') return false;
+      return true;
+    }
+
+    function schedule() {
+      if (!enabled()) return;
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        if (!enabled()) return;
+        const x = window.innerWidth ? (lastX / window.innerWidth) * 100 : 50;
+        const y = window.innerHeight ? (lastY / window.innerHeight) * 100 : 50;
+        document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+        document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+      });
+    }
+
+    function onMove(e) {
+      if (!enabled()) return;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      schedule();
+    }
+
+    document.addEventListener('pointermove', onMove, { passive: true });
+    document.addEventListener('pointerenter', onMove, { passive: true });
+  }
+
+  function setupAnnouncementBar() {
+    const bar = document.getElementById('announcement-bar');
+    const closeBtn = document.getElementById('announcement-close');
+    const peekBtn = document.getElementById('announcement-peek');
+
+    if (!bar || !closeBtn || !peekBtn) return;
+
+    const KEY = 'efmods-announcement-collapsed';
+
+    function applyCollapsed(collapsed) {
+      if (collapsed) document.body.classList.add('announcement-collapsed');
+      else document.body.classList.remove('announcement-collapsed');
+
+      peekBtn.hidden = !collapsed;
+      localStorage.setItem(KEY, collapsed ? '1' : '0');
+    }
+
+    const collapsed = localStorage.getItem(KEY) === '1';
+    applyCollapsed(collapsed);
+
+    closeBtn.addEventListener('click', function () {
+      applyCollapsed(true);
+    });
+
+    peekBtn.addEventListener('click', function () {
+      applyCollapsed(false);
+    });
+  }
   document.addEventListener('DOMContentLoaded', function () {
     const savedTheme = localStorage.getItem('efmods-theme') || 'light';
     setTheme(savedTheme);
+
+    const savedShowTime = localStorage.getItem('efmods-show-time');
+    setShowTime(savedShowTime !== '0');
+
+    const savedSpotlight = localStorage.getItem('efmods-spotlight');
+    setSpotlight(savedSpotlight !== '0');
+
+    const savedFx = localStorage.getItem('efmods-fx');
+    if (savedFx === 'off') {
+      setPerfMode('low');
+    } else if (savedFx === 'on') {
+      setPerfMode('high');
+    } else {
+      const savedPerf = localStorage.getItem('efmods-perf') || 'high';
+      setPerfMode(savedPerf);
+    }
+
     setupCopyButtons();
     setupHeroSubtitleRotator();
+    setupHomeClock();
     setupReadingProgress();
     setupMaterialRipple();
+    setupAnnouncementBar();
+    setupGlobalSpotlight();
+
+    // 设置弹窗开关
+    const settingsToggle = document.getElementById('settings-toggle');
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const settingsClose = document.getElementById('settings-close');
+
+    function openSettings() {
+      if (!settingsOverlay) return;
+      document.body.classList.add('settings-open');
+      settingsOverlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeSettings() {
+      if (!settingsOverlay) return;
+      document.body.classList.remove('settings-open');
+      settingsOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    if (settingsToggle) {
+      settingsToggle.addEventListener('click', function () {
+        const opened = document.body.classList.contains('settings-open');
+        if (opened) closeSettings();
+        else openSettings();
+      });
+    }
+
+    if (settingsClose) {
+      settingsClose.addEventListener('click', function () {
+        closeSettings();
+      });
+    }
+
+    if (settingsOverlay) {
+      settingsOverlay.addEventListener('click', function (e) {
+        if (e.target === settingsOverlay) closeSettings();
+      });
+    }
+
+    // 设置项绑定
+    const cbTime = document.getElementById('setting-show-time');
+    if (cbTime) {
+      cbTime.addEventListener('change', function () {
+        setShowTime(this.checked);
+      });
+    }
+
+    const cbSpot = document.getElementById('setting-spotlight');
+    if (cbSpot) {
+      cbSpot.addEventListener('change', function () {
+        setSpotlight(this.checked);
+      });
+    }
+
+    const btnLight = document.getElementById('setting-theme-light');
+    if (btnLight) btnLight.addEventListener('click', () => { setTheme('light'); syncSettingsUI(); });
+
+    const btnDark = document.getElementById('setting-theme-dark');
+    if (btnDark) btnDark.addEventListener('click', () => { setTheme('dark'); syncSettingsUI(); });
+
+    const btnVisual = document.getElementById('setting-fx-visual');
+    if (btnVisual) btnVisual.addEventListener('click', () => setPerfMode('high'));
+
+    const btnPerf = document.getElementById('setting-fx-perf');
+    if (btnPerf) btnPerf.addEventListener('click', () => setPerfMode('low'));
+
+    syncSettingsUI();
+
+    const perfToggle = document.getElementById('perf-toggle');
+    if (perfToggle) {
+      perfToggle.addEventListener('click', function () {
+        const current = document.documentElement.getAttribute('data-perf') === 'low' ? 'low' : 'high';
+        const next = current === 'low' ? 'high' : 'low';
+        setPerfMode(next);
+
+        perfToggle.style.transform = 'scale(0.96)';
+        setTimeout(() => {
+          perfToggle.style.transform = 'translateY(-1px)';
+          setTimeout(() => (perfToggle.style.transform = ''), 120);
+        }, 120);
+      });
+    }
 
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {

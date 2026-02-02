@@ -8,7 +8,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     const targets = document.querySelectorAll(
-      '.btn-liquid, .filter-btn, .chip, .features li, details.log-block, .download-card, .video-wrapper'
+      '.btn-liquid, .filter-btn, .chip, .features li, details.log-block, .download-card, .video-wrapper, .announcement-inner, .announcement-peek, .announcement-close'
     );
 
     targets.forEach(el => {

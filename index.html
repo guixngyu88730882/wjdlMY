@@ -55,6 +55,10 @@
         <button class="nav-toggle" id="nav-toggle" aria-label="打开菜单" aria-controls="mobile-nav-overlay" aria-expanded="false">
           <i class="fas fa-bars"></i>
         </button>
+        <button class="settings-toggle" id="settings-toggle" type="button" aria-label="打开设置" aria-haspopup="dialog" aria-controls="settings-overlay">
+          <i class="fas fa-cog"></i>
+        </button>
+        <button class="perf-toggle" id="perf-toggle" type="button" aria-pressed="false" title="开启低性能模式（减少特效）">低性能</button>
         <button class="theme-toggle" id="theme-toggle" title="切换到深色主题">
           <i class="fas fa-moon"></i>
         </button>
@@ -63,12 +67,18 @@
   </nav>
 
   <!-- 公告栏 -->
-  <div class="announcement-bar" role="note" aria-label="站点公告" style="position: sticky; top: 64px; z-index: 40; background: rgba(10, 132, 255, 0.12); border-bottom: 1px solid rgba(10, 132, 255, 0.25); backdrop-filter: blur(10px);">
-    <div style="max-width: 1200px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap;">
-      <span style="font-weight: 600;">正在参加玩家动力跨年创作赛，点击下载助力冲榜</span>
-      <a class="chip" href="https://www.wanjiadongli.com/mods/competition?clientUserId=1753255&tab=1" target="_blank" rel="noopener noreferrer">前往活动页</a>
+  <div class="announcement-bar" id="announcement-bar" role="note" aria-label="站点公告">
+    <div class="announcement-inner">
+      <button class="announcement-close" id="announcement-close" type="button" aria-label="收起公告">
+        <i class="fas fa-times"></i>
+      </button>
+      <span class="announcement-text">正在参加玩家动力跨年创作赛，点击下载助力冲榜</span>
+      <a class="chip" href="thanks.html?src=announcement">前往活动页</a>
     </div>
   </div>
+  <button class="announcement-peek" id="announcement-peek" type="button" aria-label="展开公告" hidden>
+    公告
+  </button>
 
   <!-- 移动端菜单（抽屉/遮罩） -->
   <div class="mobile-nav-overlay" id="mobile-nav-overlay" aria-hidden="true">
@@ -115,9 +125,11 @@
     <section id="home" class="page active-page">
       <header class="hero">
         <div class="hero-content">
-          <h1>EF Mods</h1>
-          <p class="subtitle" id="hero-subtitle">GTA5 模组官方站：更稳定、更省心、更像'原生玩法'</p>
+          <div class="hero-kicker">EF Mods</div>
+          <h1 class="hero-headline">用高端定制与企业级 AI Agent<br>驱动下一代数字化竞争力</h1>
+          <p class="subtitle" id="hero-subtitle">稳定优先 · 模块化架构 · 更像“原生玩法”</p>
           <p class="version">官方发布｜免费更新｜完整说明｜反盗版声明</p>
+          <p class="current-time" id="current-time" aria-label="当前时间"></p>
           <div class="hero-buttons">
             <a class="btn primary btn-liquid" href="#police-mod">
               <span class="liquid-refraction"></span>
@@ -145,6 +157,48 @@
         </div>
         <div class="hero-fade" aria-hidden="true"></div>
       </header>
+
+      <section class="section" id="home-showcase" aria-label="首页高级板块">
+        <div class="home-showcase-inner">
+          <h2 class="home-beam-title">稳定优先，是一种工程能力</h2>
+          <p class="home-showcase-sub">
+            我们把每一次崩溃、冲突、掉帧都当作“可复现、可定位、可修复”的工程问题：用模块化结构、可观测日志、最小化依赖，把体验打磨到更像“官方内容”。
+          </p>
+
+          <div class="home-showcase-grid" aria-label="核心方法">
+            <div class="showcase-card">
+              <div class="showcase-metric">01</div>
+              <h3>模块化拆分</h3>
+              <p>把功能拆到更小的单元：更容易排错、更少互相牵连，更新也更安心。</p>
+            </div>
+            <div class="showcase-card">
+              <div class="showcase-metric">02</div>
+              <h3>可观测日志</h3>
+              <p>关键流程都有日志与状态：遇到问题不靠猜，定位更快，反馈更有效。</p>
+            </div>
+            <div class="showcase-card">
+              <div class="showcase-metric">03</div>
+              <h3>兼容策略</h3>
+              <p>默认假设“会冲突”，所以优先降低耦合、避免硬覆盖，尽可能与主流生态共存。</p>
+            </div>
+          </div>
+
+          <div class="home-showcase-actions">
+            <a class="btn ghost btn-liquid" href="#products">
+              <span class="liquid-refraction"></span>
+              了解旗下产品
+            </a>
+            <a class="btn ghost btn-liquid" href="#about-us">
+              <span class="liquid-refraction"></span>
+              了解我们
+            </a>
+            <a class="btn primary btn-liquid" href="#join-us">
+              <span class="liquid-refraction"></span>
+              加入我们
+            </a>
+          </div>
+        </div>
+      </section>
 
       <section class="section" id="products">
         <h2>旗下产品</h2>
@@ -1031,9 +1085,92 @@
     </section>
   </main>
 
+  <!-- 设置（弹窗） -->
+  <div class="settings-overlay" id="settings-overlay" aria-hidden="true">
+    <div class="settings-panel" role="dialog" aria-modal="true" aria-label="网站设置">
+      <div class="settings-header">
+        <div class="settings-title">设置</div>
+        <button class="settings-close" id="settings-close" type="button" aria-label="关闭设置">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="settings-body">
+        <div class="settings-group">
+          <div class="settings-label">显示</div>
+          <label class="settings-row">
+            <span>实时时间卡片</span>
+            <input class="settings-switch" id="setting-show-time" type="checkbox" />
+          </label>
+          <label class="settings-row">
+            <span>鼠标聚光效果</span>
+            <input class="settings-switch" id="setting-spotlight" type="checkbox" />
+          </label>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-label">主题</div>
+          <div class="settings-segment" role="group" aria-label="主题切换">
+            <button class="settings-seg" id="setting-theme-light" type="button">浅色</button>
+            <button class="settings-seg" id="setting-theme-dark" type="button">深色</button>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-label">模式</div>
+          <div class="settings-segment" role="group" aria-label="特效模式切换">
+            <button class="settings-seg" id="setting-fx-visual" type="button">视觉模式（开特效）</button>
+            <button class="settings-seg" id="setting-fx-perf" type="button">性能模式（关特效）</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-footer">
+        <div class="settings-hint">提示：性能模式会尽量关闭动画/模糊/聚光等效果，以提升流畅度。</div>
+      </div>
+    </div>
+  </div>
+
   <!-- 页脚 -->
-  <footer class="footer">
-    <p>© 2026 EF Mods ｜ GTA5 模组集合</p>
+  <footer class="footer" aria-label="站点页脚">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-title">关于</div>
+          <a class="footer-link" href="#about-us">了解我们</a>
+          <a class="footer-link" href="#join-us">加入我们</a>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-title">资源</div>
+          <a class="footer-link" href="https://www.wanjiadongli.com" target="_blank" rel="noopener noreferrer">玩家动力官网 www.wanjiadongli.com</a>
+          <a class="footer-link" href="terms.html">协议</a>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-title">联系我们</div>
+          <div class="footer-meta">
+            <span>邮箱：</span>
+            <a class="footer-link inline" href="mailto:guxingyu88730882@163.com">guxingyu88730882@163.com</a>
+          </div>
+          <div class="footer-meta">
+            <span>邮箱：</span>
+            <a class="footer-link inline" href="mailto:3573799137@qq.com">3573799137@qq.com</a>
+          </div>
+          <div class="footer-meta">
+            <span>QQ：</span>
+            <span class="footer-plain">3573799137</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-divider" role="presentation"></div>
+
+      <div class="footer-bottom">
+        <div class="footer-line">© 2026 EF Mods</div>
+        <div class="footer-line">GTA5 模组集合</div>
+      </div>
+    </div>
   </footer>
 
   <!-- JavaScript 文件 -->
