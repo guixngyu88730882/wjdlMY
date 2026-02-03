@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="g" x1="12" y1="12" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0a84ff"/>
+      <stop offset="1" stop-color="#5ac8fa"/>
+    </linearGradient>
+  </defs>
+
+  <!-- glass tile -->
+  <rect x="10" y="10" width="44" height="44" rx="14" fill="rgba(255,255,255,0.06)" stroke="url(#g)" stroke-width="2"/>
+
+  <!-- EF monogram (uses currentColor, adapts to theme) -->
+  <path fill="currentColor" fill-opacity="0.92" d="M22 21h14v4H26v5h9v4H26v5h10v4H22V21Zm18 0h12v4H44v6h8v4H44v12h-4V21Z"/>
+</svg>
