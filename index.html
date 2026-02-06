@@ -10,7 +10,7 @@
   <meta property="og:description" content="EF Mods 模组官方站：稳定优先、模块化架构，提供下载指引、更新日志与使用说明。" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="zh_CN" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260206" />
   
   <!-- 主题与基础样式 -->
 </head>
@@ -75,8 +75,8 @@
       <button class="announcement-close" id="announcement-close" type="button" aria-label="收起公告">
         <i class="fas fa-times"></i>
       </button>
-      <span class="announcement-text">正在参加玩家动力跨年创作赛，点击下载助力冲榜</span>
-      <a class="chip" href="thanks.html?src=announcement">前往活动页</a>
+      <span class="announcement-text" id="announcement-text">重磅声明：本站模组全部迁移至增强版专区，传承版不再更新！</span>
+      <a class="chip" id="announcement-link" href="#news">查看公告</a>
     </div>
   </div>
   <button class="announcement-peek" id="announcement-peek" type="button" aria-label="展开公告" hidden>
@@ -129,40 +129,31 @@
 
     <!-- 首页 -->
     <section id="home" class="page active-page">
-      <header class="hero">
-        <div class="hero-content">
-          <div class="hero-kicker">EF Mods</div>
-          <h1 class="hero-headline">用高端定制与企业级 AIAgent驱动下一代数字化竞争力</h1>
-          <p class="subtitle" id="hero-subtitle">稳定优先 · 模块化架构 · 更像“原生玩法”</p>
+      <header class="hero hero--claude">
+        <div class="hero-content hero-claude-grid">
+          <div class="hero-claude-left">
+            <h1 class="hero-headline hero-headline--claude">用高端定制与企业级<br /><span class="hero-em">AI Agent</span><br />驱动下一代数字化竞争力</h1>
+            <p class="subtitle subtitle--claude" id="hero-subtitle"></p>
 
-
-
-          <p class="version">官方发布｜免费更新｜完整说明｜反盗版声明</p>
-          <p class="current-time" id="current-time" aria-label="当前时间"></p>
-          <div class="hero-buttons">
-            <a class="btn primary btn-liquid" href="#police-mod">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-download"></i>
-              立即下载 Police Mod
-            </a>
-            <a class="btn ghost btn-liquid" href="#yuyu-tool">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-download"></i>
-              立即下载 宇宇修改器
-            </a>
-            <a class="btn ghost btn-liquid" href="https://www.wanjiadongli.com/user/1753255?tab=2" target="_blank" rel="noopener noreferrer">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-th-large"></i>
-              更多模组
-            </a>
-          </div>
-          <div class="hero-highlights" aria-label="EF Mods 亮点">
-            <span class="tag">稳定优先</span>
-            <span class="tag">模块化架构</span>
-            <span class="tag">降低冲突</span>
-            <span class="tag">问题可定位</span>
+            <div class="hero-cta" aria-label="快速入口">
+              <a class="btn primary btn-liquid" href="#police-mod">
+                <span class="liquid-refraction"></span>
+                <i class="fas fa-download"></i>
+                立即下载 Police Mod
+              </a>
+              <a class="btn ghost btn-liquid" href="#yuyu-tool">
+                <span class="liquid-refraction"></span>
+                <i class="fas fa-download"></i>
+                立即下载 宇宇修改器
+              </a>
+            </div>
           </div>
 
+          <div class="hero-claude-right" aria-label="展示视频">
+            <div class="hero-video-frame">
+              <video class="hero-video" src="assets/claude_login_v2.mp4" autoplay muted loop playsinline webkit-playsinline preload="auto"></video>
+            </div>
+          </div>
         </div>
         <div class="hero-fade" aria-hidden="true"></div>
       </header>
@@ -235,7 +226,7 @@
             </div>
             <div class="product-actions">
               <a class="chip" href="#police-mod">查看详情</a>
-              <a class="chip" href="https://www.wanjiadongli.com/mods/287526" target="_blank" rel="noopener noreferrer">官方渠道下载</a>
+              <a class="chip" href="https://www.wanjiadongli.com/mods/292895" target="_blank" rel="noopener noreferrer">官方渠道下载</a>
             </div>
           </div>
 
@@ -246,7 +237,7 @@
             </div>
             <div class="product-actions">
               <a class="chip" href="#yuyu-tool">查看详情</a>
-              <a class="chip" href="https://www.wanjiadongli.com/mods/286819" target="_blank" rel="noopener noreferrer">官方渠道下载</a>
+              <a class="chip" href="https://www.wanjiadongli.com/mods/292897" target="_blank" rel="noopener noreferrer">官方渠道下载</a>
             </div>
           </div>
 
@@ -400,6 +391,42 @@
 
       <section class="section" id="news-feed" aria-label="EF Mods 新闻列表">
         <div class="news-list">
+          <article class="news-card" aria-label="重磅声明：模组迁移至增强版专区">
+            <div class="news-card-head">
+              <h2 class="news-title">重磅声明</h2>
+              <div class="news-meta" aria-label="发布时间">
+                <time class="news-time" datetime="2026-02-06T00:00:00" data-news-published="2026-02-06T00:00:00">2026-02-06</time>
+                <span class="news-badge" aria-label="重点公告">HOT</span>
+              </div>
+            </div>
+
+            <div class="news-content">
+              <p>
+                <strong>本站内全部模组已迁移至“增强版专区”，传承版不再更新。</strong>
+              </p>
+
+              <p>
+                同步说明：玩家动力发布页的后续更新将<strong>仅更新增强版适配</strong>（包含版本迭代、兼容性修复、安装指引与问题排查）。
+              </p>
+
+              <h3 class="news-h3">为什么要做这个决定？</h3>
+              <ul class="news-listing">
+                <li><strong>传承版玩家持续流失：</strong>维护投入与实际覆盖用户不再匹配。</li>
+                <li><strong>双版本维护成本过高：</strong>同一问题在不同分支往往需要两套验证与两套修复链路。</li>
+                <li><strong>兼容性更可控：</strong>以增强版作为唯一目标后，更新节奏更稳定，问题定位更一致。</li>
+              </ul>
+
+              <h3 class="news-h3">对你有什么影响？</h3>
+              <p>
+                如果你仍在使用传承版：你仍可继续使用现有版本，但将不再获得新功能与后续修复；建议你提前备份存档与配置，并按需评估迁移到增强版。
+              </p>
+
+              <p>
+                我们会在后续新闻中持续更新：增强版兼容性说明、推荐环境、以及常见问题的解决方案。
+              </p>
+            </div>
+          </article>
+
           <article class="news-card" aria-label="警察模组5.3.0开发中">
             <div class="news-card-head">
               <h2 class="news-title">警察模组5.3.0开发中</h2>
@@ -520,22 +547,56 @@
     <section id="police-mod" class="page">
       <!-- Hero / 顶部展示 -->
       <header class="hero">
-        <div class="hero-content">
-          <h1>EF Police Mod</h1>
-          <p class="subtitle">高拟真 · 高自由度 · GTA5 警察玩法模组</p>
-          <p class="version">当前版本：<strong>v5.2.1</strong> ｜ 更新日期：2026-01-31</p>
-          <div class="hero-buttons">
-            <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/287526" target="_blank" rel="noopener noreferrer">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-download"></i>
-              立即下载
-            </a>
-            <a class="btn ghost btn-liquid" href="#video">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-play-circle"></i>
-              观看演示
-            </a>
+        <div class="hero-content hero-content--split">
+          <div class="hero-main">
+            <h1>EF Police Mod</h1>
+            <p class="subtitle">高拟真 · 高自由度 · GTA5 警察玩法模组</p>
+            <p class="version">当前版本：<strong>v5.2.99</strong> ｜ 更新日期：2026-02-06</p>
+            <div class="hero-buttons">
+              <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/292895" target="_blank" rel="noopener noreferrer">
+                <span class="liquid-refraction"></span>
+                <i class="fas fa-download"></i>
+                立即下载
+              </a>
+              <a class="btn ghost btn-liquid" href="#video">
+                <span class="liquid-refraction"></span>
+                <i class="fas fa-play-circle"></i>
+                观看演示
+              </a>
+            </div>
           </div>
+
+          <aside class="hero-aside" aria-label="产品要点">
+            <div class="hero-cover hero-cover--police" aria-label="EF Police Mod 封面图"></div>
+            <div class="hero-aside-title">一眼看懂</div>
+            <div class="hero-chips" aria-label="核心卖点">
+              <span class="chip">稳定优先</span>
+              <span class="chip">流程一致</span>
+              <span class="chip">模块化</span>
+              <span class="chip">可观测日志</span>
+            </div>
+
+            <div class="hero-kpi" aria-label="关键指标">
+              <div class="kpi-item">
+                <div class="kpi-value">5.x</div>
+                <div class="kpi-label">当前维护分支</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-value">3 档</div>
+                <div class="kpi-label">风险等级体系</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-value">追车</div>
+                <div class="kpi-label">拒停 / 逃逸链路</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-value">日志</div>
+                <div class="kpi-label">更易定位问题</div>
+              </div>
+            </div>
+
+            <div class="hero-aside-note">建议：首次启用先单独测试本模组，再逐个加回其它脚本。</div>
+          </aside>
         </div>
         <div class="hero-fade" aria-hidden="true"></div>
       </header>
@@ -558,7 +619,7 @@
         </div>
         <p class="callout">⚠ 只认官方发布页：任何“付费解锁/代售/二次打包”均非官方。</p>
         <div class="guide-actions">
-          <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/287526" target="_blank" rel="noopener">
+          <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/292895" target="_blank" rel="noopener">
             <span class="liquid-refraction"></span>
             查看操作指南（下载页）
           </a>
@@ -578,6 +639,61 @@
           <li>真实拘捕、逼停、反抗与追车流程</li>
           <li>模块化逻辑，持续迭代更新</li>
         </ul>
+      </section>
+
+      <section class="section" id="police-modules">
+        <h2>玩法模块一览</h2>
+
+        <div class="quickstart-grid" aria-label="EF Police Mod 核心玩法模块">
+          <div class="quickstart-card">
+            <h3>警用终端</h3>
+            <p>接警 / 任务选择 / 状态反馈集中管理，让流程更“像系统”。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>风险等级</h3>
+            <p>嫌疑人分级（普通/中危/高危），让同一类出警也有不同走向。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>逼停与追车</h3>
+            <p>追车链路更完整：拒停、逃逸、下车行为与回收逻辑更自然。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>拘捕流程</h3>
+            <p>更一致的控制与提示：抓捕、控制、带走等关键步骤更清晰。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>行为与反抗</h3>
+            <p>反抗概率与行为会随风险变化，避免“一成不变”的重复体验。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>日志与可复现</h3>
+            <p>关键流程可追踪：出问题更容易定位，也更容易提供有效反馈。</p>
+          </div>
+        </div>
+
+        <div class="usp-grid" aria-label="稳定与兼容策略">
+          <div class="usp-card">
+            <h3>稳定优先</h3>
+            <p>先把高频流程打磨到可控可复现，再逐步扩展玩法与变体。</p>
+          </div>
+          <div class="usp-card">
+            <h3>兼容策略</h3>
+            <p>默认假设会冲突：降低耦合、减少硬覆盖，尽量与主流生态共存。</p>
+          </div>
+          <div class="usp-card">
+            <h3>建议排错方式</h3>
+            <p>先单独启用 Police Mod 验证正常，再逐个加入其它脚本，最快定位问题源。</p>
+          </div>
+        </div>
+
+        <div class="download-card" aria-label="操作速查">
+          <h3 style="margin-bottom: 10px;">操作速查（建议收藏）</h3>
+          <ul class="install-list">
+            <li><strong>首次排错：</strong>先只启用本模组进游戏验证（再逐个加回其它脚本）</li>
+            <li><strong>出问题怎么反馈：</strong>带上版本号 + 复现步骤 + 相关日志（越具体越快定位）</li>
+            <li><strong>安装路径：</strong><code>/scripts</code>（没有就新建），把 DLL 放进去</li>
+          </ul>
+        </div>
       </section>
 
       <!-- 视频展示 -->
@@ -608,7 +724,7 @@
           <li>推荐使用最新版本，直接覆盖安装</li>
           <li>将 <strong>DLL 文件</strong> 放入 <code>/scripts</code> 文件夹（若没有请新建）</li>
           <li>官网地址：<a href="https://www.wanjiadongli.com" target="_blank">https://www.wanjiadongli.com</a></li>
-          <li>模组下载地址：<a href="https://www.wanjiadongli.com/mods/287526" target="_blank">玩家动力 - EF Police Mod</a></li>
+          <li>模组下载地址：<a href="https://www.wanjiadongli.com/mods/292895" target="_blank">玩家动力 - EF Police Mod</a></li>
         </ul>
         <p class="warning">⚠ 本模组仅在 <strong>玩家动力网</strong> 发布原创版本，其余来源均为假冒。</p>
       </section>
@@ -658,6 +774,24 @@
           <div class="log-group" data-version="5">
             <h3 class="log-title">5.x 系列（当前维护）</h3>
             
+            <details class="log-block" id="log-5.2.99">
+              <summary class="log-header">
+                <span class="log-version">v5.2.99</span>
+                <span class="log-date">2026-02-06</span>
+                <i class="fas fa-chevron-down log-icon"></i>
+              </summary>
+              <div class="log-content">
+                <ul>
+                  <li>新增 F8 菜单（调度菜单）、F7 菜单（警用菜单）</li>
+                  <li>可以召唤警员和你协同作战（Beta）：目前因赶进度，菜单完全/等价于不可用；可呼出警员但暂不听从指挥</li>
+                  <li>拘捕更加个性化</li>
+                  <li>新增“拷起嫌疑人”：按 H 弹出菜单，可选择「拷起嫌疑人」「要求嫌疑人举起双手跪地」</li>
+                  <li>新增警服切换功能：在警局内篮圈可切换警服（男/女）</li>
+                  <li>修复若干 BUG（因篇幅原因不逐一列出）</li>
+                </ul>
+              </div>
+            </details>
+
             <details class="log-block" id="log-5.2.1">
               <summary class="log-header">
                 <span class="log-version">v5.2.1</span>
@@ -791,9 +925,9 @@
       <section class="section" id="download">
         <h2>下载</h2>
         <div class="download-card">
-          <h3>EF Police Mod v5.2.1</h3>
+          <h3>EF Police Mod v5.2.99</h3>
           <div class="download-buttons">
-            <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/287526" target="_blank" rel="noopener noreferrer">
+            <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/292895" target="_blank" rel="noopener noreferrer">
               <span class="liquid-refraction"></span>
               玩家动力
             </a>
@@ -834,22 +968,56 @@
     <!-- EF 宇宇修改器 页面 -->
     <section id="yuyu-tool" class="page">
       <header class="hero">
-        <div class="hero-content">
-          <h1>EF 宇宇修改器</h1>
-          <p class="subtitle">重新定义游戏的修改器，麻雀虽小，五脏俱全</p>
-       <p class="version">当前版本：<strong>v4.2.0</strong> ｜ 更新日期：2026-02-03</p>
-          <div class="hero-buttons">
-            <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/286819" target="_blank" rel="noopener">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-download"></i>
-              立即下载
-            </a>
-            <a class="btn ghost btn-liquid" href="#yuyu-video">
-              <span class="liquid-refraction"></span>
-              <i class="fas fa-play-circle"></i>
-              观看演示
-            </a>
+        <div class="hero-content hero-content--split">
+          <div class="hero-main">
+            <h1>EF 宇宇修改器</h1>
+            <p class="subtitle">重新定义游戏的修改器，麻雀虽小，五脏俱全</p>
+            <p class="version">当前版本：<strong>v4.2.0</strong> ｜ 更新日期：2026-02-03</p>
+            <div class="hero-buttons">
+              <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/292897" target="_blank" rel="noopener">
+                <span class="liquid-refraction"></span>
+                <i class="fas fa-download"></i>
+                立即下载
+              </a>
+              <a class="btn ghost btn-liquid" href="#yuyu-video">
+                <span class="liquid-refraction"></span>
+                <i class="fas fa-play-circle"></i>
+                观看演示
+              </a>
+            </div>
           </div>
+
+          <aside class="hero-aside" aria-label="产品要点">
+            <div class="hero-cover hero-cover--yuyu" aria-label="EF 宇宇修改器 封面图"></div>
+            <div class="hero-aside-title">一眼看懂</div>
+            <div class="hero-chips" aria-label="核心卖点">
+              <span class="chip">轻量</span>
+              <span class="chip">够用</span>
+              <span class="chip">模块化</span>
+              <span class="chip">配置实时保存</span>
+            </div>
+
+            <div class="hero-kpi" aria-label="关键模块">
+              <div class="kpi-item">
+                <div class="kpi-value">车辆</div>
+                <div class="kpi-label">刷车 / 修复 / 强化</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-value">角色</div>
+                <div class="kpi-label">模型 / 属性自定义</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-value">武器</div>
+                <div class="kpi-label">武器库 / 数据库</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-value">世界</div>
+                <div class="kpi-label">环境 / 天气控制</div>
+              </div>
+            </div>
+
+            <div class="hero-aside-note">快捷键：<span class="keycap">F6</span> 打开主菜单。</div>
+          </aside>
         </div>
         <div class="hero-fade" aria-hidden="true"></div>
       </header>
@@ -873,7 +1041,7 @@
         </div>
         <p class="callout">建议首次使用先只启用修改器，确认正常后再加载其它大型脚本/模组。</p>
         <div class="guide-actions">
-          <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/286819" target="_blank" rel="noopener">
+          <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/292897" target="_blank" rel="noopener">
             <span class="liquid-refraction"></span>
             查看操作指南（下载页）
           </a>
@@ -895,6 +1063,61 @@
           <li>武器与载具数据库</li>
           <li>线上武器可刷出</li>
         </ul>
+      </section>
+
+      <section class="section" id="yuyu-modules">
+        <h2>为什么它“不空、不廉价”</h2>
+
+        <div class="usp-grid" aria-label="EF 宇宇修改器 关键卖点">
+          <div class="usp-card">
+            <h3>轻量但够用</h3>
+            <p>把高频功能做到“随手就能用”：不堆砌花活，优先稳定与一致的交互。</p>
+          </div>
+          <div class="usp-card">
+            <h3>模块化 + 可维护</h3>
+            <p>功能以模块拆分：更好排错、更少牵连，更新时不容易“越修越乱”。</p>
+          </div>
+          <div class="usp-card">
+            <h3>配置实时保存</h3>
+            <p>常用设置会自动保留：下次打开还是你熟悉的布局与习惯。</p>
+          </div>
+        </div>
+
+        <div class="quickstart-grid" aria-label="核心模块一览">
+          <div class="quickstart-card">
+            <h3>车辆</h3>
+            <p>刷车 / 修复 / 强化 / 外观与属性调整，一套逻辑用到底。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>角色</h3>
+            <p>模型/属性切换、常用状态与能力快速调节，面向实用。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>武器库</h3>
+            <p>武器数据库与获取逻辑统一；常用项不需要翻来翻去。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>世界/天气</h3>
+            <p>环境控制集中管理：天气、时间与常用世界选项更直观。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>动作菜单</h3>
+            <p>一键执行预设动作指令，减少重复操作，效率优先。</p>
+          </div>
+          <div class="quickstart-card">
+            <h3>特效菜单</h3>
+            <p>屏幕空间特效渲染：演示/录制更方便，同时保持稳定。</p>
+          </div>
+        </div>
+
+        <div class="download-card" aria-label="操作速查">
+          <h3 style="margin-bottom: 10px;">操作速查</h3>
+          <ul class="install-list">
+            <li><strong>打开主菜单：</strong><span class="keycap">F6</span></li>
+            <li><strong>分页切换：</strong>先选中“分页”按钮，再按 <span class="keycap">4</span> / <span class="keycap">6</span></li>
+            <li><strong>小键盘无响应：</strong>确认 <span class="keycap">Num Lock</span> 已开启</li>
+          </ul>
+        </div>
       </section>
 
       <!-- 视频展示 -->
@@ -1151,7 +1374,7 @@
         <div class="download-card">
        <h3>EF 宇宇修改器 v4.2.0</h3>
           <div class="download-buttons">
-            <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/286819" target="_blank" rel="noopener">
+            <a class="btn primary btn-liquid" href="https://www.wanjiadongli.com/mods/292897" target="_blank" rel="noopener">
               <span class="liquid-refraction"></span>
               官方下载
             </a>
@@ -1247,6 +1470,7 @@
           <div class="footer-title">资源</div>
           <a class="footer-link" href="https://www.wanjiadongli.com" target="_blank" rel="noopener noreferrer">玩家动力官网 www.wanjiadongli.com</a>
           <a class="footer-link" href="terms.html">协议</a>
+          <a class="footer-link" href="research.html">研究</a>
         </div>
 
         <div class="footer-col">
@@ -1269,15 +1493,15 @@
       <div class="footer-divider" role="presentation"></div>
 
       <div class="footer-bottom">
-        <div class="footer-line">© 2026 EF Mods</div>
+        <div class="footer-line">2025-2026 EF Mods</div>
         <div class="footer-line">GTA5 模组集合</div>
       </div>
     </div>
   </footer>
 
   <!-- JavaScript 文件 -->
-  <script src="main.js" defer></script>
-  <script src="liquid-button.js" defer></script>
-  <script src="log-animations.js" defer></script>
+  <script src="main.js?v=20260206" defer></script>
+  <script src="liquid-button.js?v=20260206" defer></script>
+  <script src="log-animations.js?v=20260206" defer></script>
 </body>
 </html>

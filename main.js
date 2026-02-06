@@ -304,54 +304,10 @@
   }
 
   function setupHeroSubtitleRotator() {
+    // 极简风：不轮播，只保留 HTML 里写死的副标题文本
     const el = document.getElementById('hero-subtitle');
     if (!el) return;
-
-    const items = [
-      "GTA5 模组官方站：更稳定、更省心、更像'原生玩法'",
-      "从玩家到创作者，我们陪你一起成长 <a class=\"subtitle-cta btn ghost small btn-liquid\" href=\"#join-us\"><span class=\"liquid-refraction\"></span>加入我们</a>",
-      "有问题不会解决？进1079691553粉丝群~",
-      "玩家动力跨年赛冲榜中，感谢每一位下载的你"
-    ];
-
-    let currentIndex = 0;
-    let timer = null;
-
-    function pickNextIndex() {
-      if (items.length <= 1) return 0;
-      let idx = currentIndex;
-      while (idx === currentIndex) {
-        idx = Math.floor(Math.random() * items.length);
-      }
-      return idx;
-    }
-
-    function render(index) {
-      el.classList.add('subtitle-switch-out');
-      window.setTimeout(() => {
-        el.innerHTML = items[index];
-        el.classList.remove('subtitle-switch-out');
-        el.classList.add('subtitle-switch-in');
-        window.setTimeout(() => el.classList.remove('subtitle-switch-in'), 260);
-      }, 230);
-    }
-
-    function scheduleNext() {
-      const delay = 3200 + Math.floor(Math.random() * 2000); // 3.2s ~ 5.2s
-      timer = window.setTimeout(() => {
-        currentIndex = pickNextIndex();
-        render(currentIndex);
-        scheduleNext();
-      }, delay);
-    }
-
-    // 初始化
-    el.innerHTML = items[currentIndex];
-    scheduleNext();
-
-    window.addEventListener('beforeunload', function () {
-      if (timer) window.clearTimeout(timer);
-    });
+    el.textContent = (el.textContent || '').trim();
   }
 
   function setupMaterialRipple() {
@@ -681,6 +637,42 @@
     });
   }
 
+  function setupAnnouncementRotator() {
+    const textEl = document.getElementById('announcement-text');
+    const linkEl = document.getElementById('announcement-link');
+    if (!textEl || !linkEl) return;
+
+    // 新用户进来先看到“重磅声明”，随后轮播到“冲榜赛”
+    const items = [
+      {
+        text: '重磅声明：本站模组全部迁移至增强版专区，传承版不再更新！',
+        href: '#news',
+        label: '查看公告'
+      },
+      {
+        text: '正在参加玩家动力跨年创作赛，点击下载助力冲榜',
+        href: 'thanks.html?src=announcement',
+        label: '前往活动页'
+      }
+    ];
+
+    let idx = 0;
+
+    function render(i) {
+      const it = items[i] || items[0];
+      textEl.textContent = it.text;
+      linkEl.textContent = it.label;
+      linkEl.setAttribute('href', it.href);
+    }
+
+    render(0);
+
+    window.setInterval(() => {
+      idx = (idx + 1) % items.length;
+      render(idx);
+    }, 6000);
+  }
+
   function setupTimeMood() {
     const root = document.documentElement;
 
@@ -820,7 +812,8 @@
       setPerfMode(savedPerf);
     }
 
-    setupTimeMood();
+    // 极简模式：关闭氛围层/聚光等重效果（保留主题切换、导航与核心交互）
+    // setupTimeMood();
 
     setupCopyButtons();
     setupHeroSubtitleRotator();
@@ -828,9 +821,10 @@
     setupOnlineTimeStatus();
     setupNewsTimeLabels();
     setupReadingProgress();
-    setupMaterialRipple();
+    // setupMaterialRipple();
     setupAnnouncementBar();
-    setupGlobalSpotlight();
+    setupAnnouncementRotator();
+    // setupGlobalSpotlight();
 
     // 设置弹窗开关
     const settingsToggle = document.getElementById('settings-toggle');
